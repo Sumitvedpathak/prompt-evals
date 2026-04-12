@@ -1,11 +1,10 @@
 [
   {
-    "task": "Write a Python function that takes an S3 event notification record (as a dictionary) and returns a tuple containing the bucket name and the object key."
+    "task": "Generate an IAM policy document that allows an AWS Lambda function to publish messages to a specific Amazon SQS queue.",
+    "solution_criteria": "The output must be a valid JSON IAM policy document. It must specify `Version: \"2012-10-17\"`. It must contain at least one `Statement` with `Effect: \"Allow\"`. The `Action` must include `sqs:SendMessage`. The `Resource` must be an ARN for a specific SQS queue (e.g., `arn:aws:sqs:REGION:ACCOUNT_ID:QUEUE_NAME`), ensuring least privilege. The policy should be concise and only grant necessary permissions."
   },
   {
-    "task": "Generate an AWS IAM policy document (JSON) that grants read-only access (s3:GetObject, s3:ListBucket) to all objects within a specific S3 bucket named 'my-example-data-bucket-123'."
-  },
-  {
-    "task": "Create a regular expression to extract the 12-digit AWS account ID from a standard AWS ARN string, such as 'arn:aws:s3:us-east-1:123456789012:accesspoint/my-ap/object/my-folder/my-file.txt'."
+    "task": "Write a single Python function that takes an AWS S3 object creation event (PUT or POST) as a dictionary and returns the S3 bucket name and the object key as a tuple.",
+    "solution_criteria": "The solution must be a single Python function. It must accept a dictionary representing an S3 event notification. It should correctly extract the bucket name and object key from the `Records[0].s3` path within the event. The function should be robust to handle cases where expected keys might be missing (e.g., returning `None` or raising a clear error), and efficiently parse the event structure. Example input: `{'Records': [{'eventSource': 'aws:s3', 's3': {'bucket': {'name': 'my-example-bucket'}, 'object': {'key': 'path/to/my/object.txt'}}}]}`. The output should be a tuple `('my-example-bucket', 'path/to/my/object.txt')`."
   }
 ]

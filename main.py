@@ -1,7 +1,10 @@
 import os
 import json
+from statistics import mean
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.messages import HumanMessage, AIMessage
+from langchain_openai import ChatOpenAI
 load_dotenv()
 
 
@@ -16,11 +19,20 @@ def strip_markdown_fence(text: str) -> str:
         lines = lines[:-1]
     return "\n".join(lines).strip()
 
-def chat(message:str):
+def chat(model:str, message:str):
     """Chat with the model and return the result"""
-    model = ChatGoogleGenerativeAI(model="gemini-2.5-flash", api_key=os.getenv("GOOGLE_API_KEY"))
+    if model == "gemini-2.5-flash":
+        model = ChatGoogleGenerativeAI(model=model, api_key=os.getenv("GOOGLE_API_KEY"))
+    else:
+        model = ChatOpenAI(model=model, api_key=os.getenv("OPENAI_API_KEY"))
     response = model.invoke(message)
     return response.content
+
+def add_user_message(messages,message):
+    messages.append(HumanMessage(content=message))
+
+def add_assistant_message(messages,message):
+    messages.append(AIMessage(content=message))
 
 def generate_dataset():
     prompt = """
@@ -30,15 +42,16 @@ def generate_dataset():
     [
     {
         "task": "Description of task",
+        "solution_criteria": "Must include runtime, memory size, optimization, performance, security, etc."
     },
     ...additional
     ]
     * Focus on tasks that can be solved by writing a single Python function, a single JSON object, or a single regex
     * Focus on tasks that do not require writing much code
 
-    Please generate 3 objects for the dataset.
+    Please generate 2 objects for the dataset.
     """
-    response = chat(prompt)
+    response = chat("gemini-2.5-flash", prompt)
     dataset = strip_markdown_fence(response)
     with open("dataset.json", "w") as f:
         json.dump(json.loads(dataset), f, indent=2)
@@ -50,31 +63,79 @@ def run_prompt(test_case:str):
     Please solve the following task:
 
     {test_case["task"]}
+    
     """
-    response = chat(prompt)
+    response = chat("gemini-2.5-flash", prompt)
     return response
+
+def grade_by_model(test_case:str, output:str):
+    """Grade the output by the model"""
+    prompt = f"""
+    You are an expert code reviewer. Evaluate this AI-generated solution.
+    Original Task:
+    <task>{test_case["task"]}</task>
+    Solution to be evaluated:
+    <solution>{output}</solution>
+    Solution Criteria:
+    <solution_criteria>{test_case["solution_criteria"]}</solution_criteria>
+    
+    Solution Criteria:
+    Use solution criteria defined in the task to evaluate the solution.
+
+    Provide your evaluation as a structured JSON object with:
+    - "strengths": An array of 1-3 key strengths
+    - "weaknesses": An array of 1-3 key areas for improvement  
+    - "reasoning": A concise explanation of your assessment
+    - "score": A number between 1-10:
+
+    Respond in JSON format. Keep your response concise and direct.
+    Example output:
+    {{
+        "strengths": string[],
+        "weaknesses": string[],
+        "reasoning": string,
+        "score": number
+    }}
+    """
+
+    print("Grader Prompt: ", prompt)
+    response = chat("gpt-4o", prompt)
+    return json.loads(strip_markdown_fence(response))
+
 
 def run_test_case(test_case:str):
     """Run the test case and return the result"""
-    output = run_prompt(test_case)
+    output = strip_markdown_fence(run_prompt(test_case))
     #TODO: Grade the output
-    score = 10
+    grade = grade_by_model(test_case, output)
+    score = grade["score"]
+    reasoning = grade["reasoning"]
 
     return {
         "test_case": test_case,
         "output": output,
-        "score": score
+        "score": score,
+        "reasoning": reasoning
     }
 
 def run_eval(dataset:str):
     """Run the evaluation on the dataset"""
+    results = []
     for test_case in dataset:
         result = run_test_case(test_case)
-        print(result)
+        results.append(result)
+    average_score = mean(result["score"] for result in results)
+    print(f"Average Score: {average_score}")
+    return results
 
 def main():
     dataset = generate_dataset()
-    print(dataset)
+    print("Dataset Generated")
+    with open("dataset.json", "r") as f:
+        dataset = json.load(f)
+    print("Running Evaluations")
+    results = run_eval(dataset)
+    print(results)
 
 
 if __name__ == "__main__":
