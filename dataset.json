@@ -1,0 +1,11 @@
+[
+  {
+    "task": "Write a Python function that takes an S3 event notification record (as a dictionary) and returns a tuple containing the bucket name and the object key."
+  },
+  {
+    "task": "Generate an AWS IAM policy document (JSON) that grants read-only access (s3:GetObject, s3:ListBucket) to all objects within a specific S3 bucket named 'my-example-data-bucket-123'."
+  },
+  {
+    "task": "Create a regular expression to extract the 12-digit AWS account ID from a standard AWS ARN string, such as 'arn:aws:s3:us-east-1:123456789012:accesspoint/my-ap/object/my-folder/my-file.txt'."
+  }
+]
