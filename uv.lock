@@ -671,6 +671,7 @@ dependencies = [
     { name = "langchain-anthropic" },
     { name = "langchain-google-genai" },
     { name = "langchain-openai" },
+    { name = "openai" },
 ]
 
 [package.metadata]
@@ -680,6 +681,7 @@ requires-dist = [
     { name = "langchain-anthropic", specifier = ">=1.4.0" },
     { name = "langchain-google-genai", specifier = ">=4.2.1" },
     { name = "langchain-openai", specifier = ">=1.1.12" },
+    { name = "openai", specifier = ">=2.31.0" },
 ]
 
 [[package]]
