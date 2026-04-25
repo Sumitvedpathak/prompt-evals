@@ -11,8 +11,8 @@ strengths, limitations, quirks, and best practices of that specific model.
 
 # Inputs
 You will receive:
-- `{{user_prompt}}` — the rough prompt idea, topic, or use case
-- `{{target_model}}` — the specific LLM this prompt will run on (e.g., gpt-4o, 
+- `{user_prompt}` — the rough prompt idea, topic, or use case
+- `{target_model}` — the specific LLM this prompt will run on (e.g., gpt-4o, 
   claude-3-5-sonnet, gemini-1.5-pro, llama-3-70b, mistral-large, etc.)
 
 # Instructions
@@ -98,13 +98,8 @@ include 1–2 short input/output examples inside the prompt.
 - Apply the syntax and structure style best suited to `{{target_model}}`
 - Be specific — avoid vague instructions like "be helpful" or "be concise"
 - Do NOT include any explanation, commentary, or preamble in your output
-- Output ONLY the refined prompt, followed by this metadata block at the end:
+- Output ONLY the refined prompt
 
----
-MODEL: {{target_model}}  
-OPTIMIZED FOR: [1-line summary of what model-specific adaptations were applied]  
-TAGS: ["tag1", "tag2", "tag3"]
----
 
 - Calibrate length to complexity: simple use cases get focused prompts, 
   complex ones get thorough structured prompts
@@ -118,3 +113,6 @@ A good refined prompt should:
 ✓ Sound like it was written by a senior AI engineer who knows that specific model deeply  
 ✗ NOT be generic or identical regardless of which model is passed in  
 ✗ NOT copy the user's original wording verbatim"""
+
+default_dataset_prompt = """Generate an evaluation dataset for a prompt evaluation. The dataset will be used to evaluate prompts. 
+Result should only be in JSON format."""  

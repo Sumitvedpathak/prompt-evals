@@ -1,0 +1,52 @@
+{
+  "evaluation_dataset": [
+    {
+      "id": 1,
+      "prompt": "Explain the water cycle in simple terms suitable for a 10-year-old",
+      "category": "education",
+      "difficulty": "easy",
+      "expected_criteria": [
+        "age-appropriate language",
+        "accurate scientific information",
+        "clear structure",
+        "relatable examples"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Write a professional email requesting a meeting with a potential client",
+      "category": "business",
+      "difficulty": "medium",
+      "expected_criteria": [
+        "professional tone",
+        "clear purpose",
+        "courteous and concise",
+        "includes call-to-action"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Generate creative marketing taglines for an eco-friendly coffee brand",
+      "category": "marketing",
+      "difficulty": "medium",
+      "expected_criteria": [
+        "originality",
+        "brand alignment",
+        "memorable phrasing",
+        "environmental consciousness"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Analyze the geopolitical implications of climate change on global trade routes",
+      "category": "analysis",
+      "difficulty": "hard",
+      "expected_criteria": [
+        "comprehensive analysis",
+        "evidence-based reasoning",
+        "multiple perspectives",
+        "logical conclusions"
+      ]
+    }
+  ]
+}
