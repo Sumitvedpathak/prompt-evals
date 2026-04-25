@@ -17,8 +17,8 @@ def refine_user_prompt(type: str, prompt: str, target_model: str):
     """Refine the main prompt for the evaluation"""
     if type == "main":
         userprompt = user_refine_prompt.format(user_prompt=prompt, target_model=target_model)
-    elif type == "dataset":
-        userprompt = dataset_refine_prompt.format(user_prompt=prompt, target_model=target_model)
+    # elif type == "dataset":
+    #     userprompt = dataset_refine_prompt.format(user_prompt=prompt, target_model=target_model)
     else:
         raise ValueError(f"Invalid type: {type}")
     prompt = Chat_Refine(userprompt)
