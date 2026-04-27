@@ -11,7 +11,7 @@
 
 - Q: Is a target model required in Step 1, and does it affect refinement? → A: Target model selection is required for Step 1 state and later dataset execution; Refine uses the selected target model to refine the user-written prompt for that model.
 - Q: What parameters does the `/refine` request accept for Step 1? → A: `type=main` (always), `prompt=<textarea>`, `target_model=<selected model>`.
-- Q: What should happen if `/llms` fails or returns 0 models? → A: Block the entire Step 1 UI (including textarea) until models can be loaded; show a clear error state with retry.
+- Q: What should happen if `/llm` fails or returns 0 models? → A: Block the entire Step 1 UI (including textarea) until models can be loaded; show a clear error state with retry.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -66,7 +66,7 @@ understand why I cannot proceed and can retry.
 **Why this priority**: Model selection is mandatory for Step 1; when models cannot load, the UI must
 fail clearly rather than allowing partial progress that cannot proceed.
 
-**Independent Test**: Can be fully tested by simulating an `/llms` failure and verifying the Step 1
+**Independent Test**: Can be fully tested by simulating an `/llm` failure and verifying the Step 1
 controls are disabled while a clear error + retry affordance is shown.
 
 **Acceptance Scenarios**:
@@ -76,9 +76,9 @@ controls are disabled while a clear error + retry affordance is shown.
 
 ### Edge Cases
 
-- `/llms` returns an empty list: treat as an error/blocked state (no model can be selected); show a
+- `/llm` returns an empty list: treat as an error/blocked state (no model can be selected); show a
   clear message and retry.
-- `/llms` returns more than 6 models: the grid remains usable in a 3-column layout (wrapping or scroll
+- `/llm` returns more than 6 models: the grid remains usable in a 3-column layout (wrapping or scroll
   is acceptable) and selection remains single-choice.
 - Refreshing the page: if Step 1 state was previously set, the prompt/model are restored (so the user
   can continue without re-entering data).
@@ -103,7 +103,7 @@ controls are disabled while a clear error + retry affordance is shown.
 - **FR-005a**: For the purposes of enabling Refine and Next, "non-empty prompt text" MUST mean the
   prompt contains at least one non-whitespace character after trimming.
 - **FR-006**: The system MUST fetch available target models on initial page load and display them in a
-  model selection grid labeled "Select Model for Main Prompt" by calling `GET /llms?type=target`.
+  model selection grid labeled "Select Model for Main Prompt" by calling `GET /llm?type=target`.
 - **FR-006a**: If the model list response contains at least one model, the system MUST pre-select the
   first model by default.
 - **FR-007**: The model selection UI MUST support single selection and MUST visually highlight the
@@ -123,6 +123,9 @@ controls are disabled while a clear error + retry affordance is shown.
   and MUST preserve the existing prompt text.
 - **FR-013**: On clicking Next, the system MUST navigate to Step 2 and MUST preserve Step 1 state
   (prompt text and selected model) such that it is available to subsequent wizard steps.
+- **FR-015**: The wizard UI MUST provide a "New Eval" action on every step. On click, it MUST show a
+  confirmation modal (Yes/No). If the user confirms, the wizard state MUST be cleared and the user
+  MUST be returned to Step 1 with default values.
 - **FR-014**: The system MUST be responsive and MUST define behavior at these viewport widths:
   - Mobile: < 640px
   - Tablet: 640px–1023px
@@ -145,13 +148,13 @@ controls are disabled while a clear error + retry affordance is shown.
 
 ### Measurable Outcomes
 
-- **SC-001**: A user can load Step 1 and see the model grid populated (when `/llms` succeeds) within
+- **SC-001**: A user can load Step 1 and see the model grid populated (when `/llm` succeeds) within
   3 seconds on a typical broadband connection.
 - **SC-002**: With a non-empty prompt, Refine and Next become enabled immediately (no perceptible delay
   to the user).
 - **SC-003**: On successful refine, the prompt textarea content is replaced with the API response and
   remains stable when navigating to Step 2 and back (state preserved).
-- **SC-004**: When `/llms` fails (or returns 0 models), the UI shows a clear error state with a retry
+- **SC-004**: When `/llm` fails (or returns 0 models), the UI shows a clear error state with a retry
   path, and the Step 1 inputs/actions are disabled to prevent proceeding with incomplete state.
 - **SC-005**: At viewport widths of 390px (mobile), 768px (tablet), and 1280px (desktop), Step 1 remains
   usable without horizontal scrolling for the main content card, and the model grid column count matches
@@ -159,8 +162,8 @@ controls are disabled while a clear error + retry affordance is shown.
 
 ## Assumptions
 
-- The UI will call backend HTTP endpoints `/llms?type=target` (for target model list) and `/refine`
+- The UI will call backend HTTP endpoints `/llm?type=target` (for target model list) and `/refine`
   (for prompt refinement), as described in the acceptance checks.
-- The model list provides enough information to render each model card (name, provider, description)
-  and includes a stable model identifier for later wizard steps.
+- The model list provides enough information to render each model card (name, model, description)
+  and includes a stable model identifier for later wizard steps (the `model` field).
 - Step 2 exists and can consume the Step 1 state (prompt + selected model) provided by Step 1.

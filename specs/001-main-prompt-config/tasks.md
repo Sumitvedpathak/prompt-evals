@@ -34,7 +34,7 @@
 - [x] T005 Define shared evaluation types in `src/app/src/types/evaluation.ts` (TargetModel, Step1State, refine request/response)
 - [x] T006 Define API base URL + endpoint path constants in `src/app/src/lib/api/config.ts`
 - [x] T007 Implement typed API functions in `src/app/src/lib/api/evaluationApi.ts` for:
-  - `GET /llms?type=target`
+  - `GET /llm?type=target`
   - `POST /refine` with `{ type: "main", prompt, target_model }`
 - [x] T008 Implement wizard-wide state container in `src/app/src/features/evaluation/store/evaluationWizardStore.ts` (read/write Step 1 state for later steps)
 - [x] T009 Create Stepper component skeleton in `src/app/src/components/ui/StepStepper.tsx` (5 steps, active step prop, steps 2–5 non-clickable)
@@ -50,7 +50,7 @@
 
 **Goal**: User can load Step 1, see models, enter main prompt, select model, and click Next to proceed with state preserved.
 
-**Independent Test**: With `/llms?type=target` returning models, Step 1 shows the grid, pre-selects the first model, enables Next only when prompt is non-empty, and on Next writes Step 1 state and navigates to Step 2 route.
+**Independent Test**: With `/llm?type=target` returning models, Step 1 shows the grid, pre-selects the first model, enables Next only when prompt is non-empty, and on Next writes Step 1 state and navigates to Step 2 route.
 
 - [x] T013 [US1] Implement initial model load on mount in `src/app/src/features/evaluation/hooks/useMainPrompt.ts` (calls `getTargetModels`, stores models, pre-select first)
 - [x] T014 [US1] Implement prompt text state + “non-empty” gating in `src/app/src/features/evaluation/hooks/useMainPrompt.ts`
@@ -77,14 +77,14 @@
 
 ---
 
-## Phase 5: User Story 3 - `/llms` failure blocks the step (Priority: P3)
+## Phase 5: User Story 3 - `/llm` failure blocks the step (Priority: P3)
 
-**Goal**: If `/llms` fails or returns 0 models, block the entire Step 1 UI and show full-card error with retry.
+**Goal**: If `/llm` fails or returns 0 models, block the entire Step 1 UI and show full-card error with retry.
 
-**Independent Test**: When `/llms` fails, user sees a full-card error state with Retry; textarea/Refine/Next are not interactive until retry succeeds.
+**Independent Test**: When `/llm` fails, user sees a full-card error state with Retry; textarea/Refine/Next are not interactive until retry succeeds.
 
-- [x] T026 [US3] Implement `/llms` loading skeleton state in `src/app/src/features/evaluation/steps/MainPromptStep.tsx` (model grid skeleton cards)
-- [x] T027 [US3] Implement `/llms` error/empty detection in `src/app/src/features/evaluation/hooks/useMainPrompt.ts`
+- [x] T026 [US3] Implement `/llm` loading skeleton state in `src/app/src/features/evaluation/steps/MainPromptStep.tsx` (model grid skeleton cards)
+- [x] T027 [US3] Implement `/llm` error/empty detection in `src/app/src/features/evaluation/hooks/useMainPrompt.ts`
 - [x] T028 [US3] Implement full-card blocked error UI with Retry in `src/app/src/features/evaluation/steps/MainPromptStep.tsx`
 - [x] T029 [US3] Ensure blocked state disables textarea + Refine + Next in `src/app/src/features/evaluation/steps/MainPromptStep.tsx`
 - [x] T030 [US3] Implement Retry action to re-trigger model fetch in `src/app/src/features/evaluation/hooks/useMainPrompt.ts`

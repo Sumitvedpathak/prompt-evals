@@ -3,7 +3,7 @@
 **Date**: 2026-04-26  
 **Feature**: `../spec.md`
 
-## GET `/llms?type=target`
+## GET `/llm?type=target`
 
 **Purpose**: Fetch target models for the Step 1 model grid. Called once on mount.
 
@@ -15,9 +15,8 @@
 ```json
 [
   {
-    "id": "openai/gpt-5",
     "name": "GPT-5",
-    "provider": "OpenAI",
+    "model": "openai/gpt-5",
     "description": "Adversarial & Edge Cases"
   }
 ]

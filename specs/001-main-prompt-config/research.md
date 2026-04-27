@@ -23,8 +23,8 @@ typed interface.
 - `targetModel: { id; name; provider; description }`
 **Rationale**: The wizard needs stable, shared state across Steps 1–5 without prop-drilling.
 
-### Decision: UI blocking behavior for `/llms` failures
-**Decision**: If the `/llms?type=target` request fails or returns zero models, block the entire Step 1
+### Decision: UI blocking behavior for `/llm` failures
+**Decision**: If the `/llm?type=target` request fails or returns zero models, block the entire Step 1
 UI (including textarea, Refine, Next) and show a full-card error + Retry.
 **Rationale**: Target model is mandatory to proceed; partial UI creates unusable state.
 
@@ -36,5 +36,5 @@ UI (including textarea, Refine, Next) and show a full-card error + Retry.
 ## Alternatives considered
 
 - **State via URL query params**: rejected for complexity and payload size once later steps add data.
-- **Allow partial UI on `/llms` error**: rejected because the step cannot proceed without model choice.
+- **Allow partial UI on `/llm` error**: rejected because the step cannot proceed without model choice.
 

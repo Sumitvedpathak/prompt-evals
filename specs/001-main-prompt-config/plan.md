@@ -8,7 +8,7 @@
 ## Summary
 
 Implement the Step 1 screen of the 5-step LLM Evaluation wizard in the Next.js frontend (`src/app/`).
-The screen fetches target models (`GET /llms?type=target`), pre-selects the first model, allows users
+The screen fetches target models (`GET /llm?type=target`), pre-selects the first model, allows users
 to enter a production prompt, refine it (`POST /refine`), and proceed to Step 2 with Step 1 state
 persisted for later steps.
 
@@ -26,7 +26,7 @@ persisted for later steps.
 **Testing**: Frontend: component/behavior tests (framework TBD in implementation); Backend: existing Python tests as applicable  
 **Target Platform**: Web (modern browsers) + Node runtime for Next.js server  
 **Project Type**: Web application (frontend UI consuming backend APIs)  
-**Performance Goals**: Step 1 models grid visible within 3 seconds when `/llms` succeeds  
+**Performance Goals**: Step 1 models grid visible within 3 seconds when `/llm` succeeds  
 **Constraints**: No hardcoded API URLs; strict TypeScript (no `any`); loading/error/empty states for all API calls  
 **Scale/Scope**: Step 1 only; Steps 2–5 are out of implementation scope but must be supported via shared state
 
@@ -92,7 +92,7 @@ captured above.
   - `NEXT_PUBLIC_API_BASE_URL` (placeholder: `http://localhost:8000`)
   - Endpoint path constants in `src/app/src/lib/api/config.ts`
 - Typed API functions in `src/app/src/lib/api/evaluationApi.ts`:
-  - `getTargetModels(): Promise<TargetModel[]>` calls `GET /llms?type=target`
+  - `getTargetModels(): Promise<TargetModel[]>` calls `GET /llm?type=target`
   - `refineMainPrompt(input: { type: "main"; prompt: string; target_model: string }): Promise<{ refined_prompt: string }>`
 
 ### State management (wizard-wide)
@@ -104,8 +104,8 @@ Implement a single evaluation-wizard state container that Steps 1–5 can read/w
 
 ### UX behavior mapping
 
-- `/llms` loading: show skeleton model cards; Step 1 inputs are not interactive.
-- `/llms` error or empty: full-card error state with retry; Step 1 inputs are blocked.
+- `/llm` loading: show skeleton model cards; Step 1 inputs are not interactive.
+- `/llm` error or empty: full-card error state with retry; Step 1 inputs are blocked.
 - `/refine` in-flight: Refine shows loading; textarea is read-only; do not allow double-submit.
 - `/refine` error: inline error below textarea; preserve prompt content.
 

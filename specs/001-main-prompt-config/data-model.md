@@ -16,7 +16,7 @@ Represents a selectable target model the user will evaluate the production promp
 - `description: string` — one-line description for the card
 
 **Notes**
-- UI pre-selects the first model returned by `GET /llms?type=target`.
+- UI pre-selects the first model returned by `GET /llm?type=target`.
 
 ### MainPromptStepState (Step 1 state)
 

@@ -6,7 +6,7 @@
 ## Goal
 
 Provide the Step 1 screen of the evaluation wizard with:
-- Model grid populated from `GET /llms?type=target` (first model pre-selected)
+- Model grid populated from `GET /llm?type=target` (first model pre-selected)
 - Prompt textarea with in-border Refine button
 - Refine calls `POST /refine` with `{ type: "main", prompt, target_model }`
 - Next persists state and navigates to Step 2
