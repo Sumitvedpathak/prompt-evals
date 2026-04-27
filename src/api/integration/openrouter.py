@@ -12,7 +12,8 @@ def Chat_Refine(prompt: str) -> str:
 
     try:
         response = client.chat.completions.create(
-            model="anthropic/claude-haiku-4.5",
+            # model="anthropic/claude-haiku-4.5",
+            model="deepseek/deepseek-r1",
             messages=[{"role": "system", "content": prompt}],
         )
     except AuthenticationError as exc:

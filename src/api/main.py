@@ -1,15 +1,48 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from service.service import refine_user_prompt, get_dataset_LLMs, create_dataset, get_dataset
 from prompts.refine import default_dataset_prompt
 
-def refine_prompt(type: str, prompt: str, target_model: str):
-    """Refine the main prompt for the evaluation"""
-    prompt = refine_user_prompt(type, prompt, target_model)
-    return prompt
+app = FastAPI(
+    title="Prompt Evals",
+    description="API for prompt evaluations",
+    version="0.1.0")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class PromptRequest(BaseModel):
+    type: str
+    prompt: str
+    target_model: str
+
+class PromptResponse(BaseModel):
+    refined_prompt: str
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello World"}
+
+@app.get("/llm")
 def get_LLMs(type: str):
     """Get the list of dataset LLMs"""
     dataset_LLMs = get_dataset_LLMs(type)
     return dataset_LLMs
+
+@app.post("/refine")
+def refine_prompt(request: PromptRequest) -> PromptResponse:
+    """Refine the main prompt for the evaluation"""
+    prompt = refine_user_prompt(request.type, request.prompt, request.target_model)
+    return PromptResponse(refined_prompt=prompt)
+
 
 # def get_dataset_prompt(main_prompt: str):
 #     """Get the dataset prompt for the evaluation from the Main prompt"""
