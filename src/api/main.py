@@ -27,6 +27,15 @@ class PromptRequest(BaseModel):
 class PromptResponse(BaseModel):
     refined_prompt: str
 
+class DatasetRequest(BaseModel):
+    dataset_prompt: str
+    dataset_model: str
+    count: int
+
+class DatasetResponse(BaseModel):
+    dataset: list[str]
+
+
 @app.get("/")
 def read_root():
     return {"message": "Hello World"}
@@ -49,10 +58,13 @@ def refine_prompt(request: PromptRequest) -> PromptResponse:
 #     dataset_prompt = generate_dataset_prompt(main_prompt)
 #     return dataset_prompt
 
-def generate_dataset(dataset_prompt: str, dataset_model: str, count: int):
+
+@app.post("/dataset/create")
+def generate_dataset(request: DatasetRequest) -> DatasetResponse:
     """Generate a dataset of test cases for evaluation"""
-    dataset = create_dataset(dataset_prompt, dataset_model, count)
-    return dataset
+    request.dataset_model = "anthropic/claude-haiku-4.5" # TODO: Remove this after testing
+    dataset = create_dataset(request.dataset_prompt, request.dataset_model, request.count)
+    return DatasetResponse(dataset=dataset)
 
 def read_dataset():
     """Read the dataset from the file"""
