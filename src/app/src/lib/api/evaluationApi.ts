@@ -1,5 +1,9 @@
 import { API_ENDPOINTS, apiUrl } from "./config";
 import type {
+  GenerateCreateRequest,
+  GenerateCreateResponse,
+  RefineDatasetPromptRequest,
+  RefineDatasetPromptResponse,
   RefineMainPromptRequest,
   RefineMainPromptResponse,
   TargetModel,
@@ -61,7 +65,7 @@ export async function getTargetModels(): Promise<TargetModel[]> {
   if (!res.ok) throw new Error(`Failed to load models (${res.status})`);
   const data = await parseJson<unknown>(res);
   if (!Array.isArray(data)) {
-    throw new Error("Invalid /llms response shape");
+    throw new Error("Invalid /llm response shape");
   }
 
   // Accept either:
@@ -78,7 +82,34 @@ export async function getTargetModels(): Promise<TargetModel[]> {
     }));
   }
 
-  throw new Error("Invalid /llms response shape");
+  throw new Error("Invalid /llm response shape");
+}
+
+export async function getDatasetModels(): Promise<TargetModel[]> {
+  const res = await fetch(apiUrl(API_ENDPOINTS.llms, { type: "dataset" }), {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    cache: "no-store",
+  });
+
+  if (!res.ok) throw new Error(`Failed to load models (${res.status})`);
+  const data = await parseJson<unknown>(res);
+  if (!Array.isArray(data)) {
+    throw new Error("Invalid /llm response shape");
+  }
+
+  if (data.every(isTargetModel)) return data;
+
+  if (data.every(isLlmApiModel)) {
+    return data.map((m) => ({
+      id: m.model,
+      name: m.name,
+      provider: toProviderLabel(m.model),
+      description: m.description,
+    }));
+  }
+
+  throw new Error("Invalid /llm response shape");
 }
 
 export async function refineMainPrompt(
@@ -105,3 +136,43 @@ export async function refineMainPrompt(
   return data as RefineMainPromptResponse;
 }
 
+export async function refineDatasetPrompt(
+  input: RefineDatasetPromptRequest,
+): Promise<RefineDatasetPromptResponse> {
+  const res = await fetch(apiUrl(API_ENDPOINTS.refine), {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  });
+
+  if (!res.ok) throw new Error(`Failed to refine prompt (${res.status})`);
+  const data = await parseJson<unknown>(res);
+  if (
+    !data ||
+    typeof data !== "object" ||
+    typeof (data as { refined_prompt?: unknown }).refined_prompt !== "string"
+  ) {
+    throw new Error("Invalid /refine response shape");
+  }
+  return data as RefineDatasetPromptResponse;
+}
+
+export async function generateCreate(
+  input: GenerateCreateRequest,
+): Promise<GenerateCreateResponse> {
+  const res = await fetch(apiUrl(API_ENDPOINTS.datasetCreate), {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  });
+
+  if (!res.ok) throw new Error(`Failed to generate dataset (${res.status})`);
+  // Shape not finalized yet.
+  return parseJson<unknown>(res);
+}

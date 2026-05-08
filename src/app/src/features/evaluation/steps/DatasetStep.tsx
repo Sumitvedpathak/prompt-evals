@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { ModelCard } from "@/components/ui/ModelCard";
 import { NewEvalButton } from "@/components/ui/NewEvalButton";
 import { StepStepper } from "@/components/ui/StepStepper";
-import { useMainPrompt } from "@/features/evaluation/hooks/useMainPrompt";
+import { useDatasetStep } from "@/features/evaluation/hooks/useDatasetStep";
 
-export function MainPromptStep() {
+export function DatasetStep() {
   const router = useRouter();
   const {
     modelsState,
@@ -17,16 +17,22 @@ export function MainPromptStep() {
     setPrompt,
     promptIsNonEmpty,
     isRefining,
+    isGenerating,
     refineError,
+    generateError,
     canRefine,
-    canNext,
+    canGenerate,
     canInteract,
+    testCaseCountInput,
+    testCaseCountError,
     onSelectModel,
+    onChangeCount,
     onRefine,
+    onGenerate,
     retryLoadModels,
-    persistStep1,
+    persistStep2,
     startNewEval,
-  } = useMainPrompt();
+  } = useDatasetStep();
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 text-slate-100">
@@ -45,7 +51,7 @@ export function MainPromptStep() {
       </header>
 
       <div className="mb-6">
-        <StepStepper activeStep={1} />
+        <StepStepper activeStep={2} />
       </div>
 
       <section className="rounded-2xl border border-slate-800 bg-slate-900/85 p-6 shadow-xl shadow-black/25 backdrop-blur">
@@ -57,39 +63,39 @@ export function MainPromptStep() {
               className="size-5 text-slate-400"
               aria-hidden="true"
             >
-              <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2h3a.75.75 0 0 1 0 1.5h-3A1 1 0 0 0 5.5 4.5v3a.75.75 0 0 1-1.5 0v-3Z" />
-              <path d="M15.5 12.5a.75.75 0 0 1 .75.75v1.25A2.5 2.5 0 0 1 13.75 17h-1.25a.75.75 0 0 1 0-1.5h1.25a1 1 0 0 0 1-1v-1.25a.75.75 0 0 1 .75-.75Z" />
+              <path d="M3.5 6.5A3 3 0 0 1 6.5 3.5h7a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-7a3 3 0 0 1-3-3v-7Z" />
               <path
                 fillRule="evenodd"
-                d="M11.965 3.76a1.75 1.75 0 0 1 2.475 0l1.8 1.8a1.75 1.75 0 0 1 0 2.475l-6.51 6.51a1.75 1.75 0 0 1-.73.43l-2.62.79a.75.75 0 0 1-.93-.93l.79-2.62c.095-.315.24-.607.43-.73l6.51-6.51Zm1.414 1.06a.25.25 0 0 0-.354 0L6.77 11.075a.25.25 0 0 0-.06.102l-.46 1.52 1.52-.46a.25.25 0 0 0 .102-.06l6.255-6.255a.25.25 0 0 0 0-.354l-1.8-1.8Z"
+                d="M6.5 7.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75Zm0 3a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 0 1.5h-3.5a.75.75 0 0 1-.75-.75Z"
                 clipRule="evenodd"
               />
             </svg>
-            Step 1: Main Prompt Configuration
+            Step 2: Dataset Generation
           </div>
           <div className="mt-1 text-sm text-slate-300">
-            Configure the main prompt that will be used in production and tested across different
-            models.
+            Generate a dataset of test cases to evaluate your prompt across different models.
           </div>
         </div>
 
         {modelsState.status === "loading" && (
           <div className="space-y-6">
             <div className="space-y-2">
-              <div className="h-4 w-40 rounded bg-slate-800" />
+              <div className="h-4 w-56 rounded bg-slate-800" />
               <div className="h-32 w-full rounded-xl border border-slate-800 bg-slate-900" />
             </div>
 
             <div className="space-y-2">
-              <div className="h-4 w-56 rounded bg-slate-800" />
+              <div className="h-4 w-72 rounded bg-slate-800" />
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-28 rounded-xl border border-slate-800 bg-slate-900"
-                  />
+                  <div key={i} className="h-28 rounded-xl border border-slate-800 bg-slate-900" />
                 ))}
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="h-4 w-44 rounded bg-slate-800" />
+              <div className="h-10 w-40 rounded-xl border border-slate-800 bg-slate-900" />
             </div>
 
             <div className="flex justify-end">
@@ -117,13 +123,15 @@ export function MainPromptStep() {
         {modelsState.status === "ready" && (
           <div className="space-y-6">
             <div>
-              <div className="mb-2 text-sm font-semibold text-slate-100">Main Prompt to Test</div>
+              <div className="mb-2 text-sm font-semibold text-slate-100">
+                Dataset Generation Prompt
+              </div>
               <div className="relative">
                 <textarea
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   placeholder={
-                    "Enter the main prompt you want to evaluate across different models.\nExample: 'You are a helpful assistant that answers questions concisely and accurately.'"
+                    "Describe the dataset you want to generate.\nExample: 'Generate 100 customer support tickets about billing, each with category and expected resolution steps.'"
                   }
                   className="min-h-36 w-full resize-y rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 pr-28 text-sm text-slate-100 shadow-sm outline-none placeholder:text-slate-500 focus:border-violet-400 focus:ring-4 focus:ring-violet-500/30"
                   readOnly={!canInteract || isRefining}
@@ -138,7 +146,7 @@ export function MainPromptStep() {
                     isRefining
                       ? "cursor-wait bg-gradient-to-r from-violet-600 via-fuchsia-600 to-violet-600 bg-[length:200%_100%] text-white shadow-lg shadow-fuchsia-400/40 ring-4 ring-fuchsia-300/30 animate-pulse"
                       : canRefine
-                        ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white shadow-sm hover:from-violet-500 hover:to-fuchsia-400"
+                        ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white shadow-sm hover:from-violet-500 hover:to-fuchsia-400 hover:shadow-md hover:shadow-fuchsia-200/70"
                         : "cursor-not-allowed bg-slate-800 text-slate-500",
                   ].join(" ")}
                 >
@@ -174,19 +182,36 @@ export function MainPromptStep() {
 
             <div>
               <div className="mb-2 text-sm font-semibold text-slate-100">
-                Select Model for Main Prompt
+                Select Model for Dataset Generation
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {models.map((m) => (
                   <ModelCard
                     key={m.id}
-                    name="target-model"
+                    name="dataset-model"
                     model={m}
                     selected={m.id === selectedModelId}
                     onSelect={onSelectModel}
                   />
                 ))}
               </div>
+            </div>
+
+            <div>
+              <div className="mb-2 text-sm font-semibold text-slate-100">Number of Test Cases</div>
+              <input
+                type="number"
+                inputMode="numeric"
+                min={1}
+                step={1}
+                value={testCaseCountInput}
+                onChange={(e) => onChangeCount(e.target.value)}
+                className="w-40 rounded-xl border border-slate-700 bg-slate-950 px-4 py-2 text-sm text-slate-100 shadow-sm outline-none focus:border-violet-400 focus:ring-4 focus:ring-violet-500/30"
+              />
+              {testCaseCountError && (
+                <div className="mt-2 text-sm text-rose-300">{testCaseCountError}</div>
+              )}
+              {generateError && <div className="mt-2 text-sm text-rose-300">{generateError}</div>}
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -196,23 +221,35 @@ export function MainPromptStep() {
                   router.push("/");
                 }}
               />
-              <button
-                type="button"
-                onClick={() => {
-                  if (!canNext) return;
-                  persistStep1();
-                  router.push("/dataset");
-                }}
-                disabled={!canNext}
-                className={[
-                  "rounded-xl px-5 py-3 text-sm font-semibold text-white shadow-sm",
-                  canNext
-                    ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:from-violet-500 hover:to-fuchsia-400"
-                    : "cursor-not-allowed bg-slate-800 text-slate-500",
-                ].join(" ")}
-              >
-                Next: Dataset Generation →
-              </button>
+
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <button
+                  type="button"
+                  onClick={() => router.push("/")}
+                  className="rounded-xl border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-200 hover:border-slate-600 hover:bg-slate-800"
+                >
+                  ← Back to Step 1
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (!canGenerate) return;
+                    persistStep2();
+                    const ok = await onGenerate();
+                    if (!ok) return;
+                    router.push("/generate");
+                  }}
+                  disabled={!canGenerate}
+                  className={[
+                    "rounded-xl px-5 py-3 text-sm font-semibold text-white shadow-sm",
+                    canGenerate
+                      ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:from-violet-500 hover:to-fuchsia-400"
+                      : "cursor-not-allowed bg-slate-800 text-slate-500",
+                  ].join(" ")}
+                >
+                  {isGenerating ? "Generating..." : "Generate Dataset →"}
+                </button>
+              </div>
             </div>
           </div>
         )}

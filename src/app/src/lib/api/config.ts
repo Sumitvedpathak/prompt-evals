@@ -4,7 +4,10 @@ export const API_BASE_URL =
 export const API_ENDPOINTS = {
   llms: "/llm",
   refine: "/refine",
+  datasetCreate: "/dataset/create",
 } as const;
+
+export const ENDPOINT_DATASET_CREATE = API_ENDPOINTS.datasetCreate;
 
 export function apiUrl(pathname: string, searchParams?: Record<string, string>) {
   const url = new URL(pathname, API_BASE_URL);

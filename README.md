@@ -67,3 +67,5 @@ flow (UI → backend API → result) for a bounded scope, with explicit acceptan
 Backend provider access is configured via environment variables (e.g. `OPENROUTER_API_KEY`). Do not
 commit secrets.
 
+API - py -m uvicorn main:app --reload --port 8000
+APP - npm run dev

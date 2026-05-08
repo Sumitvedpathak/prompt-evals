@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import Any
 from service.service import refine_user_prompt, get_dataset_LLMs, create_dataset, get_dataset
 from prompts.refine import default_dataset_prompt
 
@@ -33,12 +34,12 @@ class DatasetRequest(BaseModel):
     count: int
 
 class DatasetResponse(BaseModel):
-    dataset: list[str]
+    dataset: Any
 
 
 @app.get("/")
 def read_root():
-    return {"message": "Hello World"}
+    return {"message": "Eval application API is running"}
 
 @app.get("/llm")
 def get_LLMs(type: str):
@@ -62,14 +63,20 @@ def refine_prompt(request: PromptRequest) -> PromptResponse:
 @app.post("/dataset/create")
 def generate_dataset(request: DatasetRequest) -> DatasetResponse:
     """Generate a dataset of test cases for evaluation"""
-    request.dataset_model = "anthropic/claude-haiku-4.5" # TODO: Remove this after testing
     dataset = create_dataset(request.dataset_prompt, request.dataset_model, request.count)
     return DatasetResponse(dataset=dataset)
 
+
+# # Backward-compatible alias (deprecated in UI)
+# @app.post("/dataset/create")
+# def generate_dataset_legacy(request: DatasetRequest) -> DatasetResponse:
+#     return generate_dataset(request)
+
+@app.get("/dataset/read")
 def read_dataset():
     """Read the dataset from the file"""
     dataset = get_dataset()
-    return dataset
+    return DatasetResponse(dataset=dataset)
 
 def run_eval(eval_prompt: str, eval_model: str): 
     """Run the evaluation on the dataset"""

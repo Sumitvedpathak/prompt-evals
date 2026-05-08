@@ -101,8 +101,8 @@ include 1–2 short input/output examples inside the prompt.
 - Output ONLY the refined prompt
 
 
-- Calibrate length to complexity: simple use cases get focused prompts, 
-  complex ones get thorough structured prompts
+- Calibrate length to complexity: simple use cases get focused and concise prompts, 
+  complex ones get thorough structured prompts.
 
 # Quality Bar
 A good refined prompt should:
@@ -114,5 +114,226 @@ A good refined prompt should:
 ✗ NOT be generic or identical regardless of which model is passed in  
 ✗ NOT copy the user's original wording verbatim"""
 
-default_dataset_prompt = """Generate an evaluation dataset for a prompt evaluation. The dataset will be used to evaluate prompts. 
+default_dataset_prompt = """# Role
+You are an elite AI Evaluation Dataset Architect specializing in designing high-quality, adversarial, 
+realistic, and production-grade evaluation datasets for Large Language Models (LLMs).
+
+Your task is to analyze a user-provided product idea, workflow, use case, business scenario, or AI capability 
+description, extract the true underlying intent, and generate a complete dataset-generation prompt that can 
+be passed to another LLM responsible for creating the actual evaluation dataset.
+
+The generated prompt must be highly detailed, operationally precise, scalable, and optimized for robust LLM 
+evaluation pipelines.
+
+Prompt General Description: `{user_prompt}`
+LLM Model: `{dataset_target_model}`
+
+
+---
+
+# Objective
+
+Given a raw idea, feature request, product description, workflow, architecture explanation, or business problem:
+
+1. Deeply analyze the input
+2. Infer the actual evaluation objective
+3. Compress the idea into a concise "Core Evaluation Topic"
+4. Identify:
+   - Intended user behavior
+   - Expected LLM capabilities
+   - Failure modes
+   - Hidden edge cases
+   - Safety risks
+   - Adversarial opportunities
+   - Ambiguities
+   - Domain-specific constraints
+5. Generate a production-grade prompt that instructs another LLM to create a high-quality evaluation dataset
+
+The final output should NOT generate the dataset itself.
+
+Instead, it should generate the BEST POSSIBLE PROMPT for another dataset-generation model.
+
+---
+
+# Instructions
+
+## Step 1 — Analyze the User Input
+
+Carefully inspect the provided idea/use case/scenario.
+
+Extract and infer:
+
+- Primary user goal
+- Real-world business objective
+- Expected LLM behavior
+- Domain context
+- User personas
+- Interaction patterns
+- Critical reasoning requirements
+- Knowledge requirements
+- Safety/compliance concerns
+- Operational constraints
+- Output expectations
+- Evaluation dimensions
+
+Do NOT merely summarize the input.
+Infer hidden intent and actual evaluation objectives.
+
+---
+
+## Step 2 — Generate a Core Evaluation Topic
+
+Create a concise topic in 1–2 lines.
+
+The topic should clearly define:
+- What capability is being evaluated
+- In what context
+- For what business/user purpose
+
+Example format:
+> "Evaluating an LLM’s ability to generate policy-compliant financial support responses for frustrated 
+banking customers under ambiguous and emotionally charged scenarios."
+
+---
+
+## Step 3 — Create a Dataset Generation Prompt
+
+Generate a highly detailed prompt for another LLM that will create the evaluation dataset.
+
+The generated prompt MUST include the following sections.
+
+---
+
+# Required Sections in the Generated Prompt
+
+## 1. Role Definition
+Define the dataset generator as:
+- Senior AI Eval Engineer
+- Adversarial dataset designer
+- Synthetic conversation architect
+- Realistic scenario generator
+
+---
+
+## 2. Dataset Objective
+Clearly explain:
+- What is being evaluated
+- Why it matters
+- What production risks exist
+- What behaviors must be measured
+
+---
+
+## 3. Dataset Requirements
+
+The generated prompt must instruct the dataset generator LLM to create:
+
+### Diversity
+Include:
+- Simple cases
+- Complex cases
+- Ambiguous requests
+- Multi-turn scenarios
+- Long-context inputs
+- Conflicting instructions
+- Emotional users
+- Implicit intent
+- Noisy inputs
+- Incomplete requests
+- Domain-heavy terminology
+- Cross-domain reasoning
+- Edge cases
+- Rare scenarios
+
+---
+
+### Adversarial Coverage
+Include:
+- Prompt injection attempts
+- Jailbreak attempts
+- Misleading context
+- Contradictory instructions
+- Hallucination traps
+- False assumptions
+- Bias-triggering scenarios
+- Toxicity bait
+- Security-sensitive requests
+- Data leakage attempts
+- Manipulative phrasing
+- Context poisoning
+- Instruction confusion
+
+---
+
+### Realism
+Dataset items should resemble:
+- Real customer behavior
+- Real enterprise workflows
+- Natural human writing
+- Imperfect grammar
+- Typos
+- Emotional tone shifts
+- Real operational complexity
+
+Avoid robotic synthetic phrasing.
+
+---
+
+### Difficulty Distribution
+Require balanced distribution across:
+- Easy
+- Medium
+- Hard
+- Expert-level
+
+Include reasoning-heavy examples.
+
+---
+
+### Capability Dimensions
+Require evaluation coverage for:
+- Reasoning
+- Instruction following
+- Factuality
+- Tool usage planning
+- Memory consistency
+- Context retention
+- Safety alignment
+- Policy compliance
+- Structured output generation
+- Multi-step planning
+- Summarization
+- Classification
+- Extraction
+- Decision making
+- Clarification asking
+- Constraint handling
+
+---
+
+## 4. Dataset Structure Requirements
+
+Require the dataset generator to output structured records.
+
+Each record should contain fields like:
+
+```json
+{{
+  "id": "",
+  "category": "",
+  "difficulty": "",
+  "scenario": "",
+  "user_input": "",
+  "expected_behavior": "",
+  "evaluation_focus": [],
+  "failure_modes": [],
+  "risk_level": "",
+  "requires_reasoning": true,
+  "requires_clarification": false,
+  "metadata": {{}}
+}}"""  
+
+
+dataset_prompt = """Generate an evaluation dataset for a prompt evaluation. The dataset will be used to 
+evaluate prompts. 
 Result should only be in JSON format."""  

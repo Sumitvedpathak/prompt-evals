@@ -12,16 +12,16 @@ export function StepStepper({ activeStep }: { activeStep: number }) {
           const isComplete = stepNum < activeStep;
 
           const circleClass = isActive
-            ? "border-blue-600 bg-blue-600 text-white"
+            ? "border-violet-500 bg-violet-500 text-white shadow-[0_0_20px_rgba(167,139,250,0.5)]"
             : isComplete
-              ? "border-blue-600 bg-white text-blue-600"
-              : "border-slate-300 bg-white text-slate-500";
+              ? "border-violet-400 bg-violet-500/10 text-violet-200"
+              : "border-slate-700 bg-slate-900 text-slate-400";
 
           const labelClass = isActive
-            ? "text-blue-700"
+            ? "text-violet-200"
             : isComplete
-              ? "text-slate-700"
-              : "text-slate-500";
+              ? "text-slate-200"
+              : "text-slate-400";
 
           return (
             <React.Fragment key={label}>
@@ -42,7 +42,7 @@ export function StepStepper({ activeStep }: { activeStep: number }) {
                 </span>
               </li>
               {idx < STEPS.length - 1 && (
-                <li aria-hidden="true" className="shrink-0 text-slate-300">
+                <li aria-hidden="true" className="shrink-0 text-slate-600">
                   <svg
                     viewBox="0 0 20 20"
                     fill="currentColor"

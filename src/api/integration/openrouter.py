@@ -30,7 +30,8 @@ def chat_dataset(prompt: str, model: str, count: int) -> str:
     client = OpenAI(api_key=os.getenv("OPENROUTER_API_KEY"),base_url="https://openrouter.ai/api/v1")
     try:
         response = client.chat.completions.create(
-        model=model,
+        # model=model,
+        model="deepseek/deepseek-r1", # TODO: Remove this after testing
         messages=[{"role": "system", "content": prompt},
         {"role": "user", "content": f"Generate {count} objects for the dataset."}],
     )
