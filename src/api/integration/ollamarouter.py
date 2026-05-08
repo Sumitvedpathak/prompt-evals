@@ -15,7 +15,8 @@ def Chat_Refine(prompt: str) -> str:
 
     try:
         response = client.chat.completions.create(
-            model=model,
+            # model=model,
+            model=ollama_model,
             messages=[{"role": "system", "content": prompt}],
         )
     except Exception as exc:
