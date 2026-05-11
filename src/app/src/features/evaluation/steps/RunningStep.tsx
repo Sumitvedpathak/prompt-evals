@@ -10,7 +10,8 @@ import { useRunningStep } from "@/features/evaluation/hooks/useRunningStep";
 export function RunningStep() {
   const router = useRouter();
   const { clear } = useEvaluationWizard();
-  const { runState, isComplete, isSuccess, testCaseCount, evalModelCount } = useRunningStep();
+  const { runState, isComplete, isSuccess, completed, total, evalModelCount } = useRunningStep();
+  const testCaseCount = total;
 
   return (
     <div className="min-h-screen bg-[#0f0f1a] px-4 py-8 text-slate-100">
@@ -67,20 +68,24 @@ export function RunningStep() {
             <div className="w-full max-w-md">
               {runState.status === "loading" && (
                 <div className="space-y-2">
-                  <div className="relative h-2 w-full overflow-hidden rounded-full bg-slate-800">
-                    <div className="animate-indeterminate absolute h-2 w-2/5 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500" />
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
+                    <div
+                      className="h-2 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 transition-all duration-500 ease-out"
+                      style={{ width: total > 0 ? `${Math.round((completed / total) * 100)}%` : "0%" }}
+                    />
                   </div>
-                  <div className="text-center text-sm text-slate-400">Running...</div>
+                  <div className="flex items-center justify-between text-sm text-slate-400">
+                    <span>{completed} / {total > 0 ? total : "…"} test cases</span>
+                    <span>{total > 0 ? `${Math.round((completed / total) * 100)}%` : "0%"}</span>
+                  </div>
                 </div>
               )}
 
               {runState.status === "success" && (
                 <div className="rounded-xl border border-emerald-500/40 bg-emerald-950/20 px-6 py-4">
-                  <div className="font-semibold text-emerald-400">
-                    {runState.message}
-                  </div>
+                  <div className="font-semibold text-emerald-400">Evaluation complete</div>
                   <div className="mt-1 text-sm text-emerald-300">
-                    Your results are ready to view.
+                    {completed} / {total} test cases passed. Your results are ready to view.
                   </div>
                 </div>
               )}

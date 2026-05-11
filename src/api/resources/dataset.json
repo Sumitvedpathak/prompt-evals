@@ -1,23 +1,98 @@
 [
   {
-    "id": "WA-EVT-001",
-    "category": "High-Stakes/Urgent",
-    "difficulty": "Hard",
-    "scenario": "The user is a community lead for a neighborhood watch/local residents' association. There has been a sudden, urgent change to a town hall meeting regarding a controversial new development project. The input is a 'brain-dump' of frantic notes, and the LLM must transform this into a clear, authoritative, yet calm message that prevents panic while ensuring maximum attendance.",
-    "user_input": "omg need to tell the neighborhood group the meeting is NOT at the community center anymore because of a leak. now it's at the library basement room B. starting at 7pm instead of 6pm because the board members are running late. tell them it's super important they come because the developer is bringing the final blueprints and we only have one chance to object. also tell them to bring their own chairs just in case. keep it urgent but dont make people panic lol. make it look good for whatsapp.",
-    "expected_criteria": "1. Format: Use *bolding* for the new location (Library Basement Room B) and the new time (7:00 PM) to ensure they aren't missed. 2. Tone: Urgent and authoritative but composed; must remove the 'lol' and frantic energy of the input. 3. Information Hierarchy: The change of venue and time must be the first thing the user sees. 4. CTA: A clear prompt for residents to attend and a reminder to bring chairs. 5. Anti-AI: Must avoid generic phrases like 'I hope this finds you well' or 'Please be advised.' 6. UX: Use bullet points or clear line breaks to avoid a 'wall of text' on mobile.",
+    "id": "wa_evt_001",
+    "category": "Casual/Gen-Z",
+    "difficulty": "Medium",
+    "scenario": "A community of Gen-Z Indie Game Developers hosting a rapid-fire 'Demo Day' where they showcase unfinished projects for feedback.",
+    "user_input": "Hey, can you write a WhatsApp invite for the 'Chaos Demo Night'? It's this Friday at 8pm UTC on Discord. High energy, maybe some memes. Tell them to bring their bugs and glitches because perfection is boring. Link: discord.gg/chaos-devs. Keep it snappy, they'll swipe away if it's too long.",
+    "expected_criteria": {
+      "must_include": [
+        "Chaos Demo Night",
+        "Friday 8pm UTC",
+        "Discord",
+        "discord.gg/chaos-devs"
+      ],
+      "tone_requirements": "Irreverent, high-energy, casual, and community-centric. Avoid corporate enthusiasm.",
+      "formatting_requirements": "Strategic use of emojis, bolding for the time/link, and short paragraphs for mobile readability.",
+      "negative_constraints": [
+        "Do not use phrases like 'Join us for an exciting evening'",
+        "No formal sign-offs",
+        "No long introductory paragraphs"
+      ]
+    },
     "evaluation_focus": [
-      "Information Extraction",
-      "Tone Balancing",
-      "Mobile Formatting",
-      "Psychological Trigger (Urgency)"
+      "Tone Adaptation",
+      "Brevity",
+      "Conversion Psychology"
     ],
     "failure_modes": [
-      "Missing the 'bring your own chair' detail",
-      "Using a corporate, stiff tone that feels unnatural for a neighborhood group",
-      "Burying the new time/location at the bottom of the message",
-      "Sounding overly alarmist, triggering unnecessary panic"
+      "Corporate Robot: Using professional event planning language",
+      "Information Loss: Forgetting the UTC timezone"
     ],
     "risk_level": "Medium"
+  },
+  {
+    "id": "wa_evt_002",
+    "category": "Professional/High-Net-Worth",
+    "difficulty": "Hard",
+    "scenario": "An exclusive circle of Venture Capitalists and Angel Investors announcing a private, last-minute dinner to discuss a leaked funding round.",
+    "user_input": "Write a 'Last Call' message for the VC dinner. Details: Tonight, 7pm, The Ritz Carlton (Private Room 4). Only 2 spots left. Brief: leaked Series B data for Project X. Be very discreet. It needs to feel like an exclusive club, not a sales pitch. Make it short. btw, tell them the dress code is business casual but no ties.",
+    "expected_criteria": {
+      "must_include": [
+        "Tonight 7pm",
+        "The Ritz Carlton Private Room 4",
+        "Project X Series B data",
+        "Business casual, no ties"
+      ],
+      "tone_requirements": "Understated, urgent, prestigious, and strictly confidential. High-status signaling.",
+      "formatting_requirements": "Minimalist. Very few or no emojis. Use of bolding only for the location/time.",
+      "negative_constraints": [
+        "No 'FOMO' marketing language (e.g., 'Hurry up!', 'Don't miss out!')",
+        "No exclamation marks",
+        "No generic emojis like \ud83d\ude80 or \ud83d\udcb0"
+      ]
+    },
+    "evaluation_focus": [
+      "Tone Mimicry",
+      "Instruction Following",
+      "Psychological Nuance"
+    ],
+    "failure_modes": [
+      "Spam Bot: Using aggressive sales tactics",
+      "Tone Deafness: Acting too 'excited' which lowers the perceived exclusivity"
+    ],
+    "risk_level": "High"
+  },
+  {
+    "id": "wa_evt_003",
+    "category": "Urgent/Emergency",
+    "difficulty": "Expert",
+    "scenario": "A chaotic, messy input from a community manager during a server outage. The model must extract facts from a 'brain-dump' and present them clearly under a strict character limit.",
+    "user_input": "OMG the main server is down again!! need a msg for the 5k members group. tell them we are working on it. expected up by 3pm EST. tell them NOT to open tickets right now bc the support site is also laggy. just check the status page: status.gamecloud.io. its a mess here lol. make it a 'Quick Update' post. max 250 chars including everything. seriously, keep it tiny.",
+    "expected_criteria": {
+      "must_include": [
+        "Server down",
+        "Expected fix 3pm EST",
+        "Do NOT open tickets",
+        "status.gamecloud.io"
+      ],
+      "tone_requirements": "Calm, authoritative, and reassuring, despite the messy input.",
+      "formatting_requirements": "Bullet points for the key facts to ensure speed of reading on mobile.",
+      "negative_constraints": [
+        "Cannot exceed 250 characters",
+        "Do not include the user's commentary about 'it's a mess'"
+      ]
+    },
+    "evaluation_focus": [
+      "Constraint Conflict",
+      "Factuality",
+      "Information Extraction"
+    ],
+    "failure_modes": [
+      "Formatting Stress: Outputting a long paragraph that exceeds the limit",
+      "Information Loss: Forgetting the instruction to NOT open tickets",
+      "Hallucination: Inventing a reason for the outage"
+    ],
+    "risk_level": "High"
   }
 ]

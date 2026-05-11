@@ -74,12 +74,15 @@ def get_dataset():
         dataset = json.load(f)
     return dataset
 
-def run_evaluation(main_prompt:str, main_model:str, evaluate_model:str):
-    """Run the evaluation on the dataset"""
+def run_evaluation(main_prompt: str, main_model: str, evaluate_model: str, on_progress=None):
+    """Run the evaluation on the dataset.
+
+    on_progress: optional callable(completed: int, total: int) called after each item finishes.
+    """
     dataset = get_dataset()
-    for item in dataset:
-        testcaseResponse = execute_testcase(main_prompt,item['user_input'],main_model)
-        # print("Test case Response: ", testcaseResponse)
+    total = len(dataset)
+    for i, item in enumerate(dataset):
+        testcaseResponse = execute_testcase(main_prompt, item['user_input'], main_model)
 
         dataset_json = json.dumps(item, indent=2, ensure_ascii=True)
         llmJudge_prompt = LLM_as_a_judge_prompt.replace("{dataset_json}", dataset_json)
@@ -90,14 +93,35 @@ def run_evaluation(main_prompt:str, main_model:str, evaluate_model:str):
 
         item['user_output'] = testcaseResponse
         item['evaluation'] = json.loads(_strip_markdown_fence(graderResponse))
-    
+
+        if on_progress:
+            on_progress(i + 1, total)
+
     with _DATASET_OUTPUT_PATH.open("w", encoding="utf-8") as f:
         json.dump(dataset, f, indent=2)
     print("Output Generation completed!")
-    return None
 
 def get_evaluation_results():
-    """Get the evaluation results from the file"""
+    """Get the evaluation results from the file, reshaped for the frontend contract."""
     with _DATASET_OUTPUT_PATH.open("r", encoding="utf-8") as f:
-        results = json.load(f)
-    return results
+        raw = json.load(f)
+
+    shaped = []
+    for item in raw:
+        evaluation = item.get("evaluation")
+        if not evaluation:
+            continue
+        metadata = evaluation.get("dashboard_metadata", {})
+        shaped.append({
+            "id": evaluation.get("id", ""),
+            "category": evaluation.get("category", ""),
+            "difficulty": evaluation.get("difficulty", ""),
+            "evaluation_summary": evaluation.get("evaluation_summary", {}),
+            "dimension_scores": evaluation.get("dimension_scores", {}),
+            "detected_failure_modes": evaluation.get("detected_failure_modes", []),
+            "detected_strengths": evaluation.get("detected_strengths", []),
+            "detected_issues": evaluation.get("detected_issues", []),
+            "evaluation_confidence": metadata.get("evaluation_confidence", 0),
+            "recommended_action": metadata.get("recommended_action", ""),
+        })
+    return shaped

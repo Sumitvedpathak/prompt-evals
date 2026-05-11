@@ -1,5 +1,4 @@
-from unittest import result
-from fastapi import FastAPI
+from fastapi import FastAPI, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Any
@@ -45,6 +44,9 @@ class EvaluationResultsResponse(BaseModel):
     results: Any
 
 
+_eval_progress: dict[str, Any] = {"completed": 0, "total": 0, "status": "idle"}
+
+
 @app.get("/")
 def read_root():
     return {"message": "Eval application API is running"}
@@ -60,6 +62,7 @@ def get_LLMs(type: str):
 def refine_prompt(request: PromptRequest) -> PromptResponse:
     """Refine the main prompt for the evaluation"""
     print("Prompt refineing started...")
+    print(f"Refining prompt for type: {request.type} and target model: {request.target_model} with prompt: {request.prompt[:30]}...")
     prompt = refine_user_prompt(request.type, request.prompt, request.target_model)
     print("Prompt refineing completed successfully!")
     return PromptResponse(refined_prompt=prompt)
@@ -94,26 +97,52 @@ def read_dataset():
     return DatasetResponse(dataset=dataset)
 
 @app.post("/testcase/evaluate")
-def evaluate(request: EvaluateRequest):
-    """Evaluate the dataset"""
-    try:
-        print("Evaluating with main model: ", request.main_model, "and evaluate model: ", request.evaluate_model)
-        dataset = run_evaluation(request.main_prompt, request.main_model, request.evaluate_model)
-        print("Evaluation completed successfully!")
-        return "Success"
-    except Exception as e:
-        return {"error": str(e)}
+def evaluate(request: EvaluateRequest, background_tasks: BackgroundTasks):
+    """Start evaluation in the background and return immediately."""
+    dataset = get_dataset()
+    total = len(dataset)
 
-@app.post("/eval/results")
+    _eval_progress["completed"] = 0
+    _eval_progress["total"] = total
+    _eval_progress["status"] = "running"
+
+    def _run():
+        try:
+            def _on_progress(completed: int, t: int):
+                _eval_progress["completed"] = completed
+                _eval_progress["total"] = t
+
+            run_evaluation(
+                request.main_prompt,
+                request.main_model,
+                request.evaluate_model,
+                on_progress=_on_progress,
+            )
+            _eval_progress["status"] = "complete"
+            print("Evaluation completed successfully!")
+        except Exception as e:
+            _eval_progress["status"] = "error"
+            print(f"Evaluation error: {e}")
+
+    background_tasks.add_task(_run)
+    return {"status": "started", "total": total}
+
+
+@app.get("/testcase/progress")
+def get_progress():
+    """Return current evaluation progress."""
+    return _eval_progress
+
+@app.get("/eval/results")
 def get_eval_results():
     """Get the evaluation results"""
     print("Getting evaluation results started...")
     results = get_evaluation_results()
     print("Evaluation results returned successfully!")
-    return EvaluationResultsResponse(results=results)
+    return results
 
 
-if __name__ == "__main__":
-    result = get_eval_results()
-    print(result)
+# if __name__ == "__main__":
+#     result = get_eval_results()
+#     print(result)
     

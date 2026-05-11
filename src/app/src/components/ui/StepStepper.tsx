@@ -2,7 +2,20 @@ import React from "react";
 
 const STEPS = ["Main Prompt", "Dataset", "View Data", "Running", "Results"] as const;
 
-export function StepStepper({ activeStep }: { activeStep: number }) {
+const STEP_ROUTES: Record<number, string> = {
+  1: "/",
+  2: "/dataset",
+  3: "/viewdata",
+  4: "/running",
+};
+
+export function StepStepper({
+  activeStep,
+  onStepClick,
+}: {
+  activeStep: number;
+  onStepClick?: (step: number) => void;
+}) {
   return (
     <nav aria-label="Evaluation steps" className="w-full">
       <ol className="flex items-center gap-3 overflow-x-auto py-1 text-sm">
@@ -10,6 +23,7 @@ export function StepStepper({ activeStep }: { activeStep: number }) {
           const stepNum = idx + 1;
           const isActive = stepNum === activeStep;
           const isComplete = stepNum < activeStep;
+          const isClickable = isComplete && !!onStepClick && stepNum in STEP_ROUTES;
 
           const circleClass = isActive
             ? "border-violet-500 bg-violet-500 text-white shadow-[0_0_20px_rgba(167,139,250,0.5)]"
@@ -23,23 +37,40 @@ export function StepStepper({ activeStep }: { activeStep: number }) {
               ? "text-slate-200"
               : "text-slate-400";
 
+          const stepContent = (
+            <>
+              <span
+                className={[
+                  "grid size-6 place-items-center rounded-full border text-xs font-semibold",
+                  circleClass,
+                ].join(" ")}
+              >
+                {stepNum}
+              </span>
+              <span className={["whitespace-nowrap font-medium", labelClass].join(" ")}>
+                {label}
+              </span>
+            </>
+          );
+
           return (
             <React.Fragment key={label}>
               <li
                 className="flex shrink-0 items-center gap-2"
                 aria-current={isActive ? "step" : undefined}
               >
-                <span
-                  className={[
-                    "grid size-6 place-items-center rounded-full border text-xs font-semibold",
-                    circleClass,
-                  ].join(" ")}
-                >
-                  {stepNum}
-                </span>
-                <span className={["whitespace-nowrap font-medium", labelClass].join(" ")}>
-                  {label}
-                </span>
+                {isClickable ? (
+                  <button
+                    type="button"
+                    onClick={() => onStepClick(stepNum)}
+                    className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+                    aria-label={`Go to step ${stepNum}: ${label}`}
+                  >
+                    {stepContent}
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-2">{stepContent}</div>
+                )}
               </li>
               {idx < STEPS.length - 1 && (
                 <li aria-hidden="true" className="shrink-0 text-slate-600">

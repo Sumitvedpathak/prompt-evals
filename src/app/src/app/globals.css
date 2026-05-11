@@ -28,6 +28,23 @@
   animation: slideIndeterminate 1.4s ease-in-out infinite;
 }
 
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    background-image: none !important;
+    color: black !important;
+  }
+
+  .recharts-responsive-container {
+    width: 100% !important;
+    page-break-inside: avoid;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

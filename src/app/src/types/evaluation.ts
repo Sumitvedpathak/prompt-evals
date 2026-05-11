@@ -57,5 +57,45 @@ export type EvaluateRequest = {
   evaluate_model: string;
 };
 
-export type EvaluateResponse = unknown;
+export type EvaluateResponse = {
+  status: string;
+  total: number;
+};
+
+export type EvalProgressResponse = {
+  completed: number;
+  total: number;
+  status: "idle" | "running" | "complete" | "error";
+};
+
+export type EvaluationSummary = {
+  overall_score: number;
+  grade: string;
+  pass: boolean;
+};
+
+export type DimensionScores = {
+  accuracy: number;
+  consistency: number;
+  creativity: number;
+  safety: number;
+  instruction_adherence: number;
+  naturalness: number;
+  brevity_efficiency: number;
+};
+
+export type EvalResult = {
+  id: string;
+  category: string;
+  difficulty: string;
+  evaluation_summary: EvaluationSummary;
+  dimension_scores: DimensionScores;
+  detected_failure_modes: string[];
+  detected_strengths: string[];
+  detected_issues: string[];
+  evaluation_confidence: number;
+  recommended_action: string;
+};
+
+export type EvalResultsResponse = EvalResult[];
 

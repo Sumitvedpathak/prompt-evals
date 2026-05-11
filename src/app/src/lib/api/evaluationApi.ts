@@ -1,6 +1,9 @@
 import { API_ENDPOINTS, apiUrl } from "./config";
 import type {
+  EvalProgressResponse,
+  EvalResultsResponse,
   EvaluateRequest,
+  EvaluateResponse,
   GenerateCreateRequest,
   GenerateCreateResponse,
   LLMModel,
@@ -192,7 +195,7 @@ export async function getEvalModels(): Promise<LLMModel[]> {
   throw new Error("Invalid /llm response shape");
 }
 
-export async function runEvaluation(input: EvaluateRequest): Promise<string> {
+export async function runEvaluation(input: EvaluateRequest): Promise<EvaluateResponse> {
   const res = await fetch(apiUrl(API_ENDPOINTS.testcaseEvaluate), {
     method: "POST",
     headers: {
@@ -205,7 +208,14 @@ export async function runEvaluation(input: EvaluateRequest): Promise<string> {
   if (!res.ok) throw new Error(`Evaluation request failed (${res.status})`);
   const parsed = await parseJson<unknown>(res);
 
-  if (typeof parsed === "string") return parsed;
+  if (
+    parsed !== null &&
+    typeof parsed === "object" &&
+    "status" in parsed &&
+    (parsed as { status: unknown }).status === "started"
+  ) {
+    return parsed as EvaluateResponse;
+  }
 
   if (
     parsed !== null &&
@@ -217,6 +227,35 @@ export async function runEvaluation(input: EvaluateRequest): Promise<string> {
   }
 
   throw new Error("Unexpected response from evaluate endpoint");
+}
+
+export async function getEvalProgress(): Promise<EvalProgressResponse> {
+  const res = await fetch(apiUrl(API_ENDPOINTS.testcaseProgress), {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    cache: "no-store",
+  });
+
+  if (!res.ok) throw new Error(`Progress request failed (${res.status})`);
+  return parseJson<EvalProgressResponse>(res);
+}
+
+export async function getEvalResults(): Promise<EvalResultsResponse> {
+  const res = await fetch(apiUrl(API_ENDPOINTS.evalResults), {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    cache: "no-store",
+  });
+
+  if (!res.ok) throw new Error(`Failed to load results (${res.status})`);
+
+  const data = await parseJson<unknown>(res);
+
+  if (!Array.isArray(data)) {
+    throw new Error("Invalid /eval/results response shape");
+  }
+
+  return data as EvalResultsResponse;
 }
 
 export async function generateCreate(
