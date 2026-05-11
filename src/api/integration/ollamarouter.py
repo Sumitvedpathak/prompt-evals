@@ -29,6 +29,7 @@ def Chat_Refine(prompt: str) -> str:
     return content
 
 
+
 def chat_dataset(prompt: str, model: str, count: int) -> str:
     client = _ollama_client()
 
@@ -47,5 +48,40 @@ def chat_dataset(prompt: str, model: str, count: int) -> str:
             "Ensure Ollama is running locally and the model is pulled."
         ) from exc
 
+    content = response.choices[0].message.content or ""
+    return content
+
+
+def execute_testcase(main_prompt: str, user_input: str, main_model: str) -> str:
+    client = _ollama_client()
+    try:
+        response = client.chat.completions.create(
+            # model=main_model,
+            model=ollama_model,
+            messages=[{"role": "system", "content": main_prompt}, 
+            {"role": "user", "content": user_input}],
+        )
+    except Exception as exc:
+        raise RuntimeError(
+            "Ollama request failed in execute_testcase. "
+            "Ensure Ollama is running locally and the model is pulled."
+        ) from exc
+    content = response.choices[0].message.content or ""
+    return content
+
+def run_grader(llmJudge_prompt: str, testcaseResponse: str, target_model: str) -> str:
+    client = _ollama_client()
+    try:
+        response = client.chat.completions.create(
+            # model=target_model,
+            model=ollama_model,
+            messages=[{"role": "system", "content": llmJudge_prompt}, 
+            {"role": "user", "content": testcaseResponse}],
+        )
+    except Exception as exc:
+        raise RuntimeError(
+            "Ollama request failed in evaluate_testcase. "
+            "Ensure Ollama is running locally and the model is pulled."
+        ) from exc
     content = response.choices[0].message.content or ""
     return content

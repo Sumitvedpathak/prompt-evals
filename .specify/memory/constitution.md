@@ -1,13 +1,17 @@
 <!--
 Sync Impact Report
 
-- Version change: N/A → 0.1.0
-- Modified principles: Template placeholders → project-specific principles (all renamed and rewritten)
-- Added sections: None (filled existing sections)
+- Version change: 0.1.0 → 0.2.0
+- Modified principles:
+  - Added: VI. Backend API Boundary Protection (explicit user approval for `src/api/` changes)
+- Added sections: None
 - Removed sections: None
-- Templates requiring updates: ⚠ pending (no template edits made in this pass)
+- Templates requiring updates:
+  - ✅ `.specify/templates/plan-template.md` (no change required; constitution gate remains source-driven)
+  - ✅ `.specify/templates/spec-template.md` (no change required; no new mandatory spec sections introduced)
+  - ✅ `.specify/templates/tasks-template.md` (no change required; task taxonomy unaffected)
 - Deferred TODOs:
-  - TODO(RATIFICATION_DATE): Set once you decide the “official adoption date” for this constitution.
+  - TODO(RATIFICATION_DATE): Set once the official adoption date is decided.
 -->
 
 # Prompt Evals Constitution
@@ -63,6 +67,16 @@ The system MUST be safe to run in production-like environments:
 - The backend MUST return consistent error responses; failures must be observable in logs.
 - Complexity MUST be justified; default to the simplest design that supports the next phase.
 
+### VI. Backend API Boundary Protection (`src/api/` changes require explicit authorization)
+The agent MUST NOT modify files under `src/api/` unless the user explicitly asks for those
+changes in the current request.
+
+If a requested task appears to require `src/api/` changes to complete correctly, the agent MUST:
+- Stop before making any `src/api/` edits
+- Explain why the backend change is necessary
+- Ask for explicit user confirmation
+- Proceed with `src/api/` edits only after confirmation is provided
+
 ## Architecture & Folder Structure
 
 This repository is a monorepo with two primary codebases:
@@ -116,4 +130,4 @@ consistent with these principles.
   - If a PR knowingly violates a principle, it MUST include a written exception rationale and a plan
     to return to compliance (or a constitution amendment).
 
-**Version**: 0.1.0 | **Ratified**: TODO(RATIFICATION_DATE) | **Last Amended**: 2026-04-25
+**Version**: 0.2.0 | **Ratified**: TODO(RATIFICATION_DATE) | **Last Amended**: 2026-05-10

@@ -232,12 +232,12 @@ export function DatasetStep() {
                 </button>
                 <button
                   type="button"
-                  onClick={async () => {
+                  onClick={() => {
                     if (!canGenerate) return;
                     persistStep2();
-                    const ok = await onGenerate();
+                    const ok = onGenerate();
                     if (!ok) return;
-                    router.push("/generate");
+                    router.push("/viewdata");
                   }}
                   disabled={!canGenerate}
                   className={[

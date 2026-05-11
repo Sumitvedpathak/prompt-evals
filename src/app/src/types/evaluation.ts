@@ -46,3 +46,16 @@ export type GenerateCreateRequest = {
 
 export type GenerateCreateResponse = unknown;
 
+export type ViewDataStepState = {
+  evalModelId: string;
+  evalModel: LLMModel;
+};
+
+export type EvaluateRequest = {
+  main_prompt: string;
+  main_model: string;
+  evaluate_model: string;
+};
+
+export type EvaluateResponse = unknown;
+

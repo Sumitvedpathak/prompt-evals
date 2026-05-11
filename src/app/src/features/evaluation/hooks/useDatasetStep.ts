@@ -1,11 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { generateCreate, getDatasetModels, refineDatasetPrompt } from "@/lib/api/evaluationApi";
+import { getDatasetModels, refineDatasetPrompt } from "@/lib/api/evaluationApi";
 import { useEvaluationWizard } from "@/features/evaluation/store/evaluationWizardStore";
 import type { LLMModel } from "@/types/evaluation";
-
-const LAST_GENERATE_RESULT_KEY = "prompt-evals:last-generate-result";
 
 type ModelsState =
   | { status: "loading" }
@@ -163,7 +161,12 @@ export function useDatasetStep() {
     if (!seedPrompt) return;
 
     hasAutoRefinedOnLoadRef.current = true;
-    void runRefine(seedPrompt);
+    const timer = window.setTimeout(() => {
+      void runRefine(seedPrompt);
+    }, 0);
+    return () => {
+      window.clearTimeout(timer);
+    };
   }, [canInteract, isRefining, prompt, runRefine, selectedModelId, state.step1?.mainPrompt]);
 
   const persistStep2 = useCallback(() => {
@@ -177,34 +180,20 @@ export function useDatasetStep() {
     });
   }, [countValidation.value, isCountValid, prompt, selectedModel, setStep2, testCaseCount]);
 
-  const onGenerate = useCallback(async (): Promise<boolean> => {
+  const onGenerate = useCallback((): boolean => {
     if (!selectedModel) return false;
     const count = isCountValid ? (countValidation.value ?? testCaseCount) : testCaseCount;
-    const payload = {
-      dataset_prompt: prompt.trim(),
-      dataset_model: selectedModel.id,
-      count,
-    };
-    if (!payload.dataset_prompt) return false;
+    const datasetPrompt = prompt.trim();
+    if (!datasetPrompt) return false;
 
     setGenerateError(null);
-    setIsGenerating(true);
-    try {
-      setStep2({
-        datasetPrompt: payload.dataset_prompt,
-        datasetModelId: selectedModel.id,
-        datasetModel: selectedModel,
-        testCaseCount: count,
-      });
-      const result = await generateCreate(payload);
-      sessionStorage.setItem(LAST_GENERATE_RESULT_KEY, JSON.stringify(result));
-      return true;
-    } catch (err) {
-      setGenerateError(err instanceof Error ? err.message : "Failed to generate dataset.");
-      return false;
-    } finally {
-      setIsGenerating(false);
-    }
+    setStep2({
+      datasetPrompt,
+      datasetModelId: selectedModel.id,
+      datasetModel: selectedModel,
+      testCaseCount: count,
+    });
+    return true;
   }, [countValidation.value, isCountValid, prompt, selectedModel, setStep2, testCaseCount]);
 
   // Keep persisted wizard state in sync when user edits Step 2.

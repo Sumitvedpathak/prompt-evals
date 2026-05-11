@@ -7,13 +7,23 @@ import { NewEvalButton } from "@/components/ui/NewEvalButton";
 import { StepStepper } from "@/components/ui/StepStepper";
 import { useEvaluationWizard } from "@/features/evaluation/store/evaluationWizardStore";
 
-const LAST_GENERATE_RESULT_KEY = "prompt-evals:last-generate-result";
-
 type GenerateState =
   | { status: "idle" }
   | { status: "running" }
   | { status: "success"; result: unknown }
   | { status: "error"; message: string };
+
+function getDatasetFromResult(result: unknown): unknown {
+  if (
+    result &&
+    typeof result === "object" &&
+    "dataset" in result &&
+    (result as { dataset: unknown }).dataset !== undefined
+  ) {
+    return (result as { dataset: unknown }).dataset;
+  }
+  return result;
+}
 
 export default function GenerateDatasetPage() {
   const router = useRouter();
@@ -31,21 +41,33 @@ export default function GenerateDatasetPage() {
 
   const [gen, setGen] = useState<GenerateState>({ status: "idle" });
   const [attempt, setAttempt] = useState(0);
+  const [showDataset, setShowDataset] = useState(true);
+
+  const dataset = useMemo(() => {
+    if (gen.status !== "success") return null;
+    return getDatasetFromResult(gen.result);
+  }, [gen]);
+
+  const datasetJson = useMemo(() => {
+    if (dataset === null) return "";
+    return JSON.stringify(dataset, null, 2);
+  }, [dataset]);
+
+  const downloadDataset = () => {
+    if (!datasetJson) return;
+    const blob = new Blob([datasetJson], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = "dataset.json";
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(url);
+  };
 
   useEffect(() => {
     if (!request) return;
-    if (attempt === 0 && typeof window !== "undefined") {
-      const cached = sessionStorage.getItem(LAST_GENERATE_RESULT_KEY);
-      if (cached) {
-        try {
-          setGen({ status: "success", result: JSON.parse(cached) });
-          sessionStorage.removeItem(LAST_GENERATE_RESULT_KEY);
-          return;
-        } catch {
-          sessionStorage.removeItem(LAST_GENERATE_RESULT_KEY);
-        }
-      }
-    }
     let cancelled = false;
     (async () => {
       setGen({ status: "running" });
@@ -88,9 +110,9 @@ export default function GenerateDatasetPage() {
 
       <section className="rounded-2xl border border-slate-800 bg-slate-900/85 p-6 shadow-xl shadow-black/25 backdrop-blur">
         <div className="mb-5">
-          <div className="text-lg font-semibold text-slate-100">Step 3: Generating Dataset</div>
+          <div className="text-lg font-semibold text-slate-100">Step 3: View Data</div>
           <div className="mt-1 text-sm text-slate-300">
-            We’re generating your dataset. This screen will be expanded in a later feature.
+            We generate your dataset here, then you can inspect and download it as JSON.
           </div>
         </div>
 
@@ -120,16 +142,13 @@ export default function GenerateDatasetPage() {
 
         {step2 && gen.status === "running" && (
           <div className="space-y-4">
-            <div className="text-sm font-semibold text-slate-100">Processing…</div>
+            <div className="text-sm font-semibold text-slate-100">Generating dataset...</div>
             <div
               role="progressbar"
               aria-label="Generating dataset"
               className="h-2 w-full overflow-hidden rounded-full bg-slate-800"
             >
               <div className="h-2 w-1/2 animate-pulse rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500" />
-            </div>
-            <div className="text-sm text-slate-300">
-              Prompt: <span className="font-medium text-slate-100">{step2.datasetPrompt}</span>
             </div>
             <div className="text-xs text-slate-400">
               Model: {step2.datasetModel.name} ({step2.datasetModel.provider}) · Count:{" "}
@@ -139,20 +158,32 @@ export default function GenerateDatasetPage() {
         )}
 
         {step2 && gen.status === "success" && (
-          <div className="rounded-xl border border-emerald-500/40 bg-emerald-950/30 p-4">
+          <div className="space-y-4 rounded-xl border border-emerald-500/40 bg-emerald-950/30 p-4">
             <div className="font-semibold text-emerald-200">Dataset generated successfully</div>
-            <div className="mt-1 text-sm text-emerald-300">
-              We received a response from the API. The detailed dataset view will be added in a later
-              step.
+            <div className="text-sm text-emerald-300">
+              Generation is complete. You can view the dataset below and download it as JSON.
             </div>
-            <details className="mt-3">
-              <summary className="cursor-pointer text-sm font-semibold text-emerald-200">
-                View raw response (debug)
-              </summary>
-              <pre className="mt-2 max-h-64 overflow-auto rounded-lg border border-emerald-500/30 bg-slate-900 p-3 text-xs text-slate-200">
-                {JSON.stringify(gen.result, null, 2)}
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <button
+                type="button"
+                onClick={() => setShowDataset((v) => !v)}
+                className="rounded-xl border border-emerald-500/40 bg-emerald-950/40 px-4 py-2 text-sm font-semibold text-emerald-200 hover:bg-emerald-900/40"
+              >
+                {showDataset ? "Hide Dataset" : "View Dataset"}
+              </button>
+              <button
+                type="button"
+                onClick={downloadDataset}
+                className="rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-sm font-semibold text-white hover:from-violet-500 hover:to-fuchsia-400"
+              >
+                Download JSON
+              </button>
+            </div>
+            {showDataset && (
+              <pre className="max-h-72 overflow-auto rounded-lg border border-emerald-500/30 bg-slate-900 p-3 text-xs text-slate-200">
+                {datasetJson}
               </pre>
-            </details>
+            )}
           </div>
         )}
 

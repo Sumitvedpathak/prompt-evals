@@ -5,6 +5,7 @@ export const API_ENDPOINTS = {
   llms: "/llm",
   refine: "/refine",
   datasetCreate: "/dataset/create",
+  testcaseEvaluate: "/testcase/evaluate",
 } as const;
 
 export const ENDPOINT_DATASET_CREATE = API_ENDPOINTS.datasetCreate;

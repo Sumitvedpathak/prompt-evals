@@ -1,10 +1,10 @@
 [
   {
-    "task": "Generate an IAM policy document that allows an AWS Lambda function to publish messages to a specific Amazon SQS queue.",
-    "solution_criteria": "The output must be a valid JSON IAM policy document. It must specify `Version: \"2012-10-17\"`. It must contain at least one `Statement` with `Effect: \"Allow\"`. The `Action` must include `sqs:SendMessage`. The `Resource` must be an ARN for a specific SQS queue (e.g., `arn:aws:sqs:REGION:ACCOUNT_ID:QUEUE_NAME`), ensuring least privilege. The policy should be concise and only grant necessary permissions."
+    "task": "Create a Python function that takes an AWS S3 PUT event notification (as a dictionary) and returns a tuple containing the bucket name and the object key of the newly uploaded file.",
+    "solution_criteria": "The Python function must correctly parse the standard S3 PUT event structure to accurately extract both the bucket name and the object key. It should be efficient and performant, suitable for high-volume processing within an AWS Lambda environment, minimizing runtime and memory usage. The code must be concise, easy to read, and robust enough to handle the expected event format without errors. Security considerations include not hardcoding values and correctly accessing event data."
   },
   {
-    "task": "Write a single Python function that takes an AWS S3 object creation event (PUT or POST) as a dictionary and returns the S3 bucket name and the object key as a tuple.",
-    "solution_criteria": "The solution must be a single Python function. It must accept a dictionary representing an S3 event notification. It should correctly extract the bucket name and object key from the `Records[0].s3` path within the event. The function should be robust to handle cases where expected keys might be missing (e.g., returning `None` or raising a clear error), and efficiently parse the event structure. Example input: `{'Records': [{'eventSource': 'aws:s3', 's3': {'bucket': {'name': 'my-example-bucket'}, 'object': {'key': 'path/to/my/object.txt'}}}]}`. The output should be a tuple `('my-example-bucket', 'path/to/my/object.txt')`."
+    "task": "Generate an AWS IAM policy JSON document that grants a user read-only access to all objects within a specific S3 bucket named 'my-aws-data-bucket'.",
+    "solution_criteria": "The output must be a valid IAM policy JSON document. It should strictly adhere to the principle of least privilege, granting only the necessary actions for reading S3 objects (e.g., 's3:GetObject', 's3:ListBucket', 's3:GetBucketLocation'). The policy must explicitly scope these permissions to the 'my-aws-data-bucket' bucket and its objects, avoiding any overly broad wildcard resource definitions ('*'). The JSON should be well-formatted, clear, and secure, ensuring no unintended or excessive permissions are granted."
   }
 ]

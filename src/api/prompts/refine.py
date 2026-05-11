@@ -324,16 +324,48 @@ Each record should contain fields like:
   "difficulty": "",
   "scenario": "",
   "user_input": "",
-  "expected_behavior": "",
+  "expected_criteria": "",
   "evaluation_focus": [],
   "failure_modes": [],
-  "risk_level": "",
-  "requires_reasoning": true,
-  "requires_clarification": false,
-  "metadata": {{}}
+  "risk_level": ""
 }}"""  
 
+evaluation_prompt = """# Role
+You are an expert LLM evaluation reviewer. Your task is to evaluate the following AI-generated solution.
+
+Original Task:
+<task>
+{testcase}
+</task>
+
+Solution to Evaluate:
+<solution>
+{result}
+</solution>
+
+Criteria you should use to evaluate the solution:
+<criteria>
+{solution_criteria}
+</criteria>
+
+Output Format
+Provide your evaluation as a structured JSON object with the following fields, in this specific order:
+- "strengths": An array of 1-3 key strengths
+- "weaknesses": An array of 1-3 key areas for improvement
+- "reasoning": A concise explanation of your overall assessment
+- "score": A number between 1-10
+
+Respond with JSON. Keep your response concise and direct.
+Example response shape:
+{{
+    "strengths": string[],
+    "weaknesses": string[],
+    "reasoning": string,
+    "score": number
+}}"""
 
 dataset_prompt = """Generate an evaluation dataset for a prompt evaluation. The dataset will be used to 
 evaluate prompts. 
 Result should only be in JSON format."""  
+
+

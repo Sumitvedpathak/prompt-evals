@@ -1,9 +1,9 @@
+from unittest import result
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Any
-from service.service import refine_user_prompt, get_dataset_LLMs, create_dataset, get_dataset
-from prompts.refine import default_dataset_prompt
+from service.service import refine_user_prompt, get_dataset_LLMs, create_dataset, get_dataset, run_evaluation, get_evaluation_results
 
 app = FastAPI(
     title="Prompt Evals",
@@ -36,6 +36,14 @@ class DatasetRequest(BaseModel):
 class DatasetResponse(BaseModel):
     dataset: Any
 
+class EvaluateRequest(BaseModel):
+    main_prompt: str
+    main_model: str
+    evaluate_model:str
+
+class EvaluationResultsResponse(BaseModel):
+    results: Any
+
 
 @app.get("/")
 def read_root():
@@ -45,12 +53,15 @@ def read_root():
 def get_LLMs(type: str):
     """Get the list of dataset LLMs"""
     dataset_LLMs = get_dataset_LLMs(type)
+    print(f"LLMs returned for type: {type} successfully!")
     return dataset_LLMs
 
 @app.post("/refine")
 def refine_prompt(request: PromptRequest) -> PromptResponse:
     """Refine the main prompt for the evaluation"""
+    print("Prompt refineing started...")
     prompt = refine_user_prompt(request.type, request.prompt, request.target_model)
+    print("Prompt refineing completed successfully!")
     return PromptResponse(refined_prompt=prompt)
 
 
@@ -63,7 +74,9 @@ def refine_prompt(request: PromptRequest) -> PromptResponse:
 @app.post("/dataset/create")
 def generate_dataset(request: DatasetRequest) -> DatasetResponse:
     """Generate a dataset of test cases for evaluation"""
+    print("Generating dataset started...")
     dataset = create_dataset(request.dataset_prompt, request.dataset_model, request.count)
+    print("Dataset generated successfully!")
     return DatasetResponse(dataset=dataset)
 
 
@@ -75,15 +88,32 @@ def generate_dataset(request: DatasetRequest) -> DatasetResponse:
 @app.get("/dataset/read")
 def read_dataset():
     """Read the dataset from the file"""
+    print("Reading dataset started...")
     dataset = get_dataset()
+    print("Dataset read successfully!")
     return DatasetResponse(dataset=dataset)
 
-def run_eval(eval_prompt: str, eval_model: str): 
-    """Run the evaluation on the dataset"""
-    return None
+@app.post("/testcase/evaluate")
+def evaluate(request: EvaluateRequest):
+    """Evaluate the dataset"""
+    try:
+        print("Evaluating with main model: ", request.main_model, "and evaluate model: ", request.evaluate_model)
+        dataset = run_evaluation(request.main_prompt, request.main_model, request.evaluate_model)
+        print("Evaluation completed successfully!")
+        return "Success"
+    except Exception as e:
+        return {"error": str(e)}
 
-# refine_prompt("main","Generate an whats app message for invitation to a party", "gemini/gemini-2.5-flash")
-# refine_prompt("dataset","Generate an whats app message for invitation to a party", "openai/gpt-4o")
-# print(get_LLMs("dataset"))
-# generate_dataset(default_dataset_prompt, "anthropic/claude-haiku-4.5", 4)
-# print(read_dataset())
+@app.post("/eval/results")
+def get_eval_results():
+    """Get the evaluation results"""
+    print("Getting evaluation results started...")
+    results = get_evaluation_results()
+    print("Evaluation results returned successfully!")
+    return EvaluationResultsResponse(results=results)
+
+
+if __name__ == "__main__":
+    result = get_eval_results()
+    print(result)
+    

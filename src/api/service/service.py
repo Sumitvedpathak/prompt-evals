@@ -1,13 +1,15 @@
 import json
 from pathlib import Path
 from prompts.refine import user_refine_prompt, default_dataset_prompt
+from prompts.llm_judge import LLM_as_a_judge_prompt
 # from integration.openrouter import Chat_Refine, chat_dataset
-from integration.ollamarouter import Chat_Refine, chat_dataset
+from integration.ollamarouter import Chat_Refine, chat_dataset, execute_testcase, run_grader
 
 _API_DIR = Path(__file__).resolve().parents[1]
 _RESOURCES_DIR = _API_DIR / "resources"
 _LLMS_PATH = _RESOURCES_DIR / "llms.json"
 _DATASET_PATH = _RESOURCES_DIR / "dataset.json"
+_DATASET_OUTPUT_PATH = _RESOURCES_DIR / "dataset_output.json"
 
 def _strip_markdown_fence(text: str) -> str:
     text = text.strip()
@@ -71,3 +73,31 @@ def get_dataset():
     with _DATASET_PATH.open("r", encoding="utf-8") as f:
         dataset = json.load(f)
     return dataset
+
+def run_evaluation(main_prompt:str, main_model:str, evaluate_model:str):
+    """Run the evaluation on the dataset"""
+    dataset = get_dataset()
+    for item in dataset:
+        testcaseResponse = execute_testcase(main_prompt,item['user_input'],main_model)
+        # print("Test case Response: ", testcaseResponse)
+
+        dataset_json = json.dumps(item, indent=2, ensure_ascii=True)
+        llmJudge_prompt = LLM_as_a_judge_prompt.replace("{dataset_json}", dataset_json)
+
+        print(f"Evaluating item: {item.get('id', 'unknown')}")
+        graderResponse = run_grader(llmJudge_prompt, testcaseResponse, evaluate_model)
+        print("Grader response received.")
+
+        item['user_output'] = testcaseResponse
+        item['evaluation'] = json.loads(_strip_markdown_fence(graderResponse))
+    
+    with _DATASET_OUTPUT_PATH.open("w", encoding="utf-8") as f:
+        json.dump(dataset, f, indent=2)
+    print("Output Generation completed!")
+    return None
+
+def get_evaluation_results():
+    """Get the evaluation results from the file"""
+    with _DATASET_OUTPUT_PATH.open("r", encoding="utf-8") as f:
+        results = json.load(f)
+    return results

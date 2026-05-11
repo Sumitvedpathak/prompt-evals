@@ -1,7 +1,9 @@
 import { API_ENDPOINTS, apiUrl } from "./config";
 import type {
+  EvaluateRequest,
   GenerateCreateRequest,
   GenerateCreateResponse,
+  LLMModel,
   RefineDatasetPromptRequest,
   RefineDatasetPromptResponse,
   RefineMainPromptRequest,
@@ -158,6 +160,63 @@ export async function refineDatasetPrompt(
     throw new Error("Invalid /refine response shape");
   }
   return data as RefineDatasetPromptResponse;
+}
+
+export async function getEvalModels(): Promise<LLMModel[]> {
+  const res = await fetch(apiUrl(API_ENDPOINTS.llms, { type: "evaluation" }), {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    cache: "no-store",
+  });
+
+  if (!res.ok) throw new Error(`Failed to load evaluation models (${res.status})`);
+  const data = await parseJson<unknown>(res);
+  if (!Array.isArray(data)) {
+    throw new Error("Invalid /llm response shape");
+  }
+  if (data.length === 0) {
+    throw new Error("No evaluation models available.");
+  }
+
+  if (data.every(isTargetModel)) return data;
+
+  if (data.every(isLlmApiModel)) {
+    return data.map((m) => ({
+      id: m.model,
+      name: m.name,
+      provider: toProviderLabel(m.model),
+      description: m.description,
+    }));
+  }
+
+  throw new Error("Invalid /llm response shape");
+}
+
+export async function runEvaluation(input: EvaluateRequest): Promise<string> {
+  const res = await fetch(apiUrl(API_ENDPOINTS.testcaseEvaluate), {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  });
+
+  if (!res.ok) throw new Error(`Evaluation request failed (${res.status})`);
+  const parsed = await parseJson<unknown>(res);
+
+  if (typeof parsed === "string") return parsed;
+
+  if (
+    parsed !== null &&
+    typeof parsed === "object" &&
+    "error" in parsed &&
+    typeof (parsed as { error: unknown }).error === "string"
+  ) {
+    throw new Error((parsed as { error: string }).error);
+  }
+
+  throw new Error("Unexpected response from evaluate endpoint");
 }
 
 export async function generateCreate(
