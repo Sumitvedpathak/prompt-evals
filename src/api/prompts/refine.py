@@ -176,27 +176,12 @@ Extract and infer:
 - Output expectations
 - Evaluation dimensions
 
-Do NOT merely summarize the input.
+Do NOT summarize this to user back in your response.
 Infer hidden intent and actual evaluation objectives.
 
 ---
 
-## Step 2 — Generate a Core Evaluation Topic
-
-Create a concise topic in 1–2 lines.
-
-The topic should clearly define:
-- What capability is being evaluated
-- In what context
-- For what business/user purpose
-
-Example format:
-> "Evaluating an LLM’s ability to generate policy-compliant financial support responses for frustrated 
-banking customers under ambiguous and emotionally charged scenarios."
-
----
-
-## Step 3 — Create a Dataset Generation Prompt
+## Step 2 — Create a Dataset Generation Prompt
 
 Generate a highly detailed prompt for another LLM that will create the evaluation dataset.
 
@@ -311,7 +296,7 @@ Require evaluation coverage for:
 
 ---
 
-## 4. Dataset Structure Requirements
+## 3. Dataset Structure Requirements
 
 Require the dataset generator to output structured records.
 

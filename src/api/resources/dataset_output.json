@@ -1,248 +1,66 @@
 [
   {
-    "id": "wa_evt_001",
-    "category": "Casual/Gen-Z",
-    "difficulty": "Medium",
-    "scenario": "A community of Gen-Z Indie Game Developers hosting a rapid-fire 'Demo Day' where they showcase unfinished projects for feedback.",
-    "user_input": "Hey, can you write a WhatsApp invite for the 'Chaos Demo Night'? It's this Friday at 8pm UTC on Discord. High energy, maybe some memes. Tell them to bring their bugs and glitches because perfection is boring. Link: discord.gg/chaos-devs. Keep it snappy, they'll swipe away if it's too long.",
-    "expected_criteria": {
-      "must_include": [
-        "Chaos Demo Night",
-        "Friday 8pm UTC",
-        "Discord",
-        "discord.gg/chaos-devs"
-      ],
-      "tone_requirements": "Irreverent, high-energy, casual, and community-centric. Avoid corporate enthusiasm.",
-      "formatting_requirements": "Strategic use of emojis, bolding for the time/link, and short paragraphs for mobile readability.",
-      "negative_constraints": [
-        "Do not use phrases like 'Join us for an exciting evening'",
-        "No formal sign-offs",
-        "No long introductory paragraphs"
-      ]
-    },
-    "evaluation_focus": [
-      "Tone Adaptation",
-      "Brevity",
-      "Conversion Psychology"
-    ],
-    "failure_modes": [
-      "Corporate Robot: Using professional event planning language",
-      "Information Loss: Forgetting the UTC timezone"
-    ],
-    "risk_level": "Medium",
-    "user_output": "Depending on the \"vibe\" of your community, here are three options: **The Hype Beast** (Maximum energy), **The Short & Punchy** (Fastest read), and **The Chaos Gremlin** (More ironic/meme-y).\n\n### Option 1: The Hype Beast \ud83d\ude80\n*(Best if your community loves emojis and high energy)*\n\n**CHAOS DEMO NIGHT is here!** \ud83d\udca5\n\nStop pretending your code works. Bring your wildest bugs, your funniest glitches, and your most broken features. Because let\u2019s be real: perfection is boring. \ud83e\udd71\n\n\ud83d\uddd3\ufe0f **When:** This Friday\n\u23f0 **Time:** 8 PM UTC\n\ud83d\udccd **Where:** Discord\n\n**Jump in here:** \ud83d\udc49 discord.gg/chaos-devs\n\nSee you there. Let's break some things! \ud83d\udd28\ud83d\udd25\n\n***\n\n### Option 2: Short & Punchy \u26a1\ufe0f\n*(Best for high-retention, minimal scrolling)*\n\n**Ready for some Chaos?** \ud83c\udf00\n\nFriday @ 8PM UTC on Discord.\n\nShow us your projects. Bring the bugs. Embrace the glitches. \ud83d\udc1b\u2728\n\n**Join the madness:** \n\ud83d\udc49 discord.gg/chaos-devs\n\n*(Don't be late or your code will magically acquire 100 new errors)* \ud83d\udc80\n\n***\n\n### Option 3: The Chaos Gremlin \ud83d\udc7e\n*(Best if your community has a \"shitposting\" or irony-heavy culture)*\n\n**POV: Your code is a disaster.** \ud83e\udd21\n\nPerfect: \u274c\nAbsolute Chaos: \u2705\n\nCome flex your most spectacular failures at **Chaos Demo Night.**\n\n\ud83d\udcc5 Friday | 8PM UTC\n\ud83d\udd17 discord.gg/chaos-devs\n\nBring your glitches. We\u2019re celebrating the bugs. \ud83d\udc1b\ud83d\udcbb\n\n***\n\n**\ud83d\udca1 Pro-Tip for WhatsApp:** \n*   **Bold** the time and the link so they stand out.\n*   If you have a funny GIF of a game glitching or a \"This is Fine\" dog meme, send it *immediately* after the text message for maximum engagement!",
-    "evaluation": {
-      "id": "wa_evt_001",
-      "category": "Casual/Gen-Z",
-      "difficulty": "Medium",
-      "evaluation_summary": {
-        "overall_score": 35,
-        "grade": "Poor",
-        "pass": false
-      },
-      "dimension_scores": {
-        "accuracy": 100,
-        "consistency": 90,
-        "creativity": 60,
-        "safety": 100,
-        "instruction_adherence": 20,
-        "naturalness": 30,
-        "brevity_efficiency": 40
-      },
-      "detected_failure_modes": [
-        "Corporate Robot",
-        "AI-isms"
-      ],
-      "detected_strengths": [
-        "Accurate information retrieval (UTC, link, name)",
-        "Appropriate slang/meme-adjacent language within the options"
-      ],
-      "detected_issues": [
-        "Assistant framing/meta-talk",
-        "Incorrect output format (Multiple options instead of one invite)",
-        "Formatting leakage (Markdown headers and bullet points)",
-        "Over-explaining/Pro-tips"
-      ],
-      "reasoning": {
-        "task_understanding": "The model understood the content requirements (what to include) but completely failed the behavioral requirement of 'acting' as a writer of a WhatsApp invite, instead acting as an AI assistant providing choices.",
-        "behavior_alignment": "The response aligns with a 'helpful assistant' persona rather than the 'Gen-Z/Indie Dev' persona requested. The user asked for 'a WhatsApp invite', implying a final product, not a menu of options with descriptors.",
-        "tone_analysis": "While the text inside the options is decent, the overall delivery is corporate AI. The use of labels like '(Best if your community loves emojis)' is the opposite of the requested high-energy, casual vibe.",
-        "constraint_analysis": "The model violated the implicit constraint of brevity and directness. It included significant meta-commentary and formatting (### Option 1) that would never be sent in a WhatsApp message.",
-        "naturalness_analysis": "Extremely low. No human would send a WhatsApp invite containing 'Option 1: The Hype Beast' and 'Pro-Tips for WhatsApp'. This is a classic LLM failure where the model prioritizes 'helpfulness' over 'realism'.",
-        "risk_analysis": "No safety risks detected."
-      },
-      "metrics": {
-        "ai_ism_detected": true,
-        "formatting_leakage": true,
-        "over_explaining": true,
-        "persona_leakage": true,
-        "hallucination_detected": false,
-        "verbosity_score": 85,
-        "emotional_alignment_score": 40
-      },
-      "dashboard_metadata": {
-        "top_strength": "Information Accuracy",
-        "primary_failure": "Assistant Framing / Meta-talk",
-        "evaluation_confidence": 100,
-        "recommended_action": "fail"
-      }
-    }
-  },
-  {
-    "id": "wa_evt_002",
-    "category": "Professional/High-Net-Worth",
-    "difficulty": "Hard",
-    "scenario": "An exclusive circle of Venture Capitalists and Angel Investors announcing a private, last-minute dinner to discuss a leaked funding round.",
-    "user_input": "Write a 'Last Call' message for the VC dinner. Details: Tonight, 7pm, The Ritz Carlton (Private Room 4). Only 2 spots left. Brief: leaked Series B data for Project X. Be very discreet. It needs to feel like an exclusive club, not a sales pitch. Make it short. btw, tell them the dress code is business casual but no ties.",
-    "expected_criteria": {
-      "must_include": [
-        "Tonight 7pm",
-        "The Ritz Carlton Private Room 4",
-        "Project X Series B data",
-        "Business casual, no ties"
-      ],
-      "tone_requirements": "Understated, urgent, prestigious, and strictly confidential. High-status signaling.",
-      "formatting_requirements": "Minimalist. Very few or no emojis. Use of bolding only for the location/time.",
-      "negative_constraints": [
-        "No 'FOMO' marketing language (e.g., 'Hurry up!', 'Don't miss out!')",
-        "No exclamation marks",
-        "No generic emojis like \ud83d\ude80 or \ud83d\udcb0"
-      ]
-    },
-    "evaluation_focus": [
-      "Tone Mimicry",
-      "Instruction Following",
-      "Psychological Nuance"
-    ],
-    "failure_modes": [
-      "Spam Bot: Using aggressive sales tactics",
-      "Tone Deafness: Acting too 'excited' which lowers the perceived exclusivity"
-    ],
-    "risk_level": "High",
-    "user_output": "Depending on how \"secret\" you want this to feel, here are three options.\n\n### Option 1: The \"Quietly Exclusive\" (Best for high-level trust)\n*This approach reads like a peer-to-peer text rather than a community blast.*\n\nLast call for tonight. 7pm at The Ritz Carlton (Private Room 4). \n\nWe have 2 seats remaining for the discussion on Project X\u2019s Series B data. Strictly off-the-record.\n\nDress: Business casual, no ties.\n\n***\n\n### Option 2: The \"Insider\" (High urgency/FOMO)\n*This highlights the scarcity and the \"leak\" aspect more directly.*\n\nTonight: Project X Series B breakdown. \n\n7pm | The Ritz Carlton, Private Room 4. \n\nOnly 2 spots left. Keeping this circle small for discretion. \n\nBusiness casual (leave the ties at home).\n\n***\n\n### Option 3: The \"Ultra-Minimalist\" (Maximum mystery)\n*Use this if the group already knows who you are and what Project X is.*\n\nTwo seats left for tonight's dinner. \n\n7pm, The Ritz (Private Room 4). Project X / Series B data. Confidential.\n\nBusiness casual, no ties. \n\n***\n\n**\ud83d\udca1 Pro-Tip for WhatsApp:**\n*   **Do not** use emojis. Emojis make it look like a marketing blast. \n*   **Do not** use \"Register here\" links. If you have a booking link, send it as a separate message *after* they reply \"I'm in,\" or simply tell them to DM you to claim the spot. This maintains the \"exclusive club\" feel.",
-    "evaluation": {
-      "id": "wa_evt_002",
-      "category": "Professional/High-Net-Worth",
-      "difficulty": "Hard",
-      "evaluation_summary": {
-        "overall_score": 12,
-        "grade": "Critical",
-        "pass": false
-      },
-      "dimension_scores": {
-        "accuracy": 40,
-        "consistency": 30,
-        "creativity": 20,
-        "safety": 100,
-        "instruction_adherence": 10,
-        "naturalness": 5,
-        "brevity_efficiency": 10
-      },
-      "detected_failure_modes": [
-        "Spam Bot: Using aggressive sales tactics",
-        "Tone Deafness: Acting too 'excited' which lowers the perceived exclusivity"
-      ],
-      "detected_strengths": [
-        "Included all required factual details (Time, Location, Project X, Dress Code)."
-      ],
-      "detected_issues": [
-        "Extreme Assistant-ism: Provided options and meta-commentary instead of a single response.",
-        "Formatting Leakage: Used Markdown headers, bullets, and horizontal rules.",
-        "Instruction Violation: Failed to provide a single 'last call' message, providing a 'menu' instead.",
-        "Persona Leakage: Acted as an AI writing coach/consultant rather than executing the task.",
-        "Over-explaining: Added 'Pro-Tips' and logic for the choices."
-      ],
-      "reasoning": {
-        "task_understanding": "The model fundamentally misunderstood the role of an executor. It treated the prompt as a request for copywriting services with options rather than a request to generate the actual message.",
-        "behavior_alignment": "Completely misaligned. The user asked for a message; the model provided a presentation of options. This is the most common LLM failure pattern.",
-        "tone_analysis": "The meta-commentary is helpful/corporate, even though the content of the options attempted to be understated. However, the overall interaction feels like an AI assistant, not a high-status peer.",
-        "constraint_analysis": "Failed almost all negative constraints. It used Markdown headers, bullets, and labels. It provided three variants instead of one concise message.",
-        "naturalness_analysis": "The delivery is 0% natural for the requested scenario. A high-status VC does not present their peers with 'Option 1: The Quietly Exclusive' along with pro-tips.",
-        "risk_analysis": "No safety risks, but catastrophic failure in production utility."
-      },
-      "metrics": {
-        "ai_ism_detected": true,
-        "formatting_leakage": true,
-        "over_explaining": true,
-        "persona_leakage": true,
-        "hallucination_detected": false,
-        "verbosity_score": 90,
-        "emotional_alignment_score": 20
-      },
-      "dashboard_metadata": {
-        "top_strength": "Factual accuracy of included details",
-        "primary_failure": "Assistant-mode failure (providing options/meta-talk instead of the final product)",
-        "evaluation_confidence": 100,
-        "recommended_action": "fail"
-      }
-    }
-  },
-  {
-    "id": "wa_evt_003",
-    "category": "Urgent/Emergency",
+    "id": "WA-EXP-001",
+    "category": "Retention / High-Stakes Crisis Management",
     "difficulty": "Expert",
-    "scenario": "A chaotic, messy input from a community manager during a server outage. The model must extract facts from a 'brain-dump' and present them clearly under a strict character limit.",
-    "user_input": "OMG the main server is down again!! need a msg for the 5k members group. tell them we are working on it. expected up by 3pm EST. tell them NOT to open tickets right now bc the support site is also laggy. just check the status page: status.gamecloud.io. its a mess here lol. make it a 'Quick Update' post. max 250 chars including everything. seriously, keep it tiny.",
-    "expected_criteria": {
-      "must_include": [
-        "Server down",
-        "Expected fix 3pm EST",
-        "Do NOT open tickets",
-        "status.gamecloud.io"
-      ],
-      "tone_requirements": "Calm, authoritative, and reassuring, despite the messy input.",
-      "formatting_requirements": "Bullet points for the key facts to ensure speed of reading on mobile.",
-      "negative_constraints": [
-        "Cannot exceed 250 characters",
-        "Do not include the user's commentary about 'it's a mess'"
-      ]
-    },
+    "scenario": "A luxury concierge service has accidentally double-charged a VIP client (worth $100k+ ARR) for their annual membership. The client is known to be extremely impatient and values brevity and immediate resolution over apologies. The brand voice is 'Ultra-Premium, Discreet, and Efficient.' The model must handle the failure, reassure the client, and provide a solution without sounding groveling or using 'corporate speak' (e.g., avoid 'We apologize for any inconvenience caused').",
+    "user_input": "Urgent: double charge on Mr. Sterling's account. He's a VIP and hates long messages. Write a WA msg telling him we found the error and it's being fixed. Make it sound high-end, not desperate. Don't use the word 'sorry' or 'apologize'\u2014just fix it. Keep it under 140 chars. Use bold for the resolution part.",
+    "expected_criteria": [
+      "Strictly under 140 characters",
+      "Does NOT use the words 'sorry' or 'apologize'",
+      "Uses WhatsApp markdown (*bold*) for the resolution/action step",
+      "Maintains a confident, luxury tone (low-friction, high-efficiency)",
+      "Contains a clear statement that the error is handled"
+    ],
     "evaluation_focus": [
-      "Constraint Conflict",
-      "Factuality",
-      "Information Extraction"
+      "Instruction Following",
+      "Tone Consistency",
+      "Brevity",
+      "Constraint Adherence"
     ],
     "failure_modes": [
-      "Formatting Stress: Outputting a long paragraph that exceeds the limit",
-      "Information Loss: Forgetting the instruction to NOT open tickets",
-      "Hallucination: Inventing a reason for the outage"
+      "Using prohibited words ('sorry', 'apologize')",
+      "Over-apologizing/Groveling (violating luxury persona)",
+      "Exceeding character limit",
+      "Failing to use bold markdown for the specific section"
     ],
     "risk_level": "High",
-    "user_output": "\ud83d\udea8 **Quick Update** \ud83d\udea8\n\nMain servers are currently down. We\u2019re working on it! \ud83d\udee0\ufe0f\n\n\u2705 Expected up: **3pm EST**\n\u26a0\ufe0f Please **DO NOT** open tickets (support site is laggy).\n\nCheck live status here: \n\ud83d\udc49 status.gamecloud.io",
+    "user_output": "Mr. Sterling, we identified a duplicate charge on your account. **A full reversal is already being processed.** Thank you for your patience.",
     "evaluation": {
-      "id": "wa_evt_003",
-      "category": "Urgent/Emergency",
+      "id": "WA-EXP-001",
+      "category": "Retention / High-Stakes Crisis Management",
       "difficulty": "Expert",
-      "scenario": "A chaotic, messy input from a community manager during a server outage. The model must extract facts from a 'brain-dump' and present them clearly under a strict character limit.",
       "evaluation_summary": {
-        "overall_score": 96,
-        "grade": "Excellent",
+        "overall_score": 88,
+        "grade": "Good",
         "pass": true
       },
       "dimension_scores": {
         "accuracy": 100,
-        "consistency": 100,
-        "creativity": 92,
+        "consistency": 95,
+        "creativity": 80,
         "safety": 100,
         "instruction_adherence": 100,
-        "naturalness": 95,
-        "brevity_efficiency": 98
+        "naturalness": 85,
+        "brevity_efficiency": 90
       },
       "detected_failure_modes": [],
       "detected_strengths": [
-        "Perfect extraction of critical facts",
-        "Strict adherence to character limit",
-        "High scanability for mobile users",
-        "Appropriate shift from user's chaotic tone to a professional community post"
+        "Strict adherence to negative constraints (no 'sorry' or 'apologize')",
+        "Correct use of bold markdown for the resolution",
+        "Excellent brevity (well under 140 characters)",
+        "Confidence-driven tone aligned with luxury persona"
       ],
-      "detected_issues": [],
+      "detected_issues": [
+        "The closing phrase 'Thank you for your patience' is slightly corporate/generic, which marginally reduces the 'Ultra-Premium' feel for a client who hates long messages and values efficiency."
+      ],
       "reasoning": {
-        "task_understanding": "The model correctly identified the need to transform a frantic brain-dump into a professional, high-visibility announcement.",
-        "behavior_alignment": "The response aligns perfectly with the 'Quick Update' requirement and organizes facts logically.",
-        "tone_analysis": "Calm, authoritative, and urgent without being panicked, which is ideal for an emergency server status update.",
-        "constraint_analysis": "The total character count is approximately 215 characters, successfully staying under the 250-character limit.",
-        "naturalness_analysis": "The use of emojis is appropriate for a community group (like Discord or Telegram) and avoids the typical 'AI assistant' phrasing.",
-        "risk_analysis": "No hallucinations detected; all information is derived directly from the user input."
+        "task_understanding": "The model perfectly understood the need for a low-friction, high-efficiency message for a high-net-worth individual.",
+        "behavior_alignment": "Aligned well with the request to 'just fix it' without groveling.",
+        "tone_analysis": "Confident and direct. It avoids the 'desperate' tone explicitly forbidden in the prompt.",
+        "constraint_analysis": "Character count is ~125 chars. Forbidden words were omitted. Bold markdown was applied correctly to the action step.",
+        "naturalness_analysis": "Feels like a high-end concierge message, though slightly polished. It avoids obvious AI-isms like 'Certainly' or 'I hope this helps'.",
+        "risk_analysis": "No safety or privacy risks identified."
       },
       "metrics": {
         "ai_ism_detected": false,
@@ -250,12 +68,12 @@
         "over_explaining": false,
         "persona_leakage": false,
         "hallucination_detected": false,
-        "verbosity_score": 0,
-        "emotional_alignment_score": 95
+        "verbosity_score": 10,
+        "emotional_alignment_score": 90
       },
       "dashboard_metadata": {
-        "top_strength": "Constraint Adherence & Information Extraction",
-        "primary_failure": "None",
+        "top_strength": "Constraint Adherence",
+        "primary_failure": "Slightly generic closing phrasing",
         "evaluation_confidence": 100,
         "recommended_action": "pass"
       }

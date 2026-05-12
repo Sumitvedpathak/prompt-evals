@@ -55,6 +55,7 @@ def chat_dataset(prompt: str, model: str, count: int) -> str:
 def execute_testcase(main_prompt: str, user_input: str, main_model: str) -> str:
     client = _ollama_client()
     try:
+        print(f"Executing testcase with main_prompt: {main_prompt[:30]} | User_input: {user_input[:30]} |  Main_model: {main_model}")
         response = client.chat.completions.create(
             # model=main_model,
             model=ollama_model,
