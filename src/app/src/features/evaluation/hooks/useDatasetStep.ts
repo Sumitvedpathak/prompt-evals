@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getDatasetModels, refineDatasetPrompt } from "@/lib/api/evaluationApi";
 import { useEvaluationWizard } from "@/features/evaluation/store/evaluationWizardStore";
 import type { LLMModel } from "@/types/evaluation";
@@ -22,7 +22,6 @@ function parsePositiveInt(raw: string): { value: number | null; error: string | 
 
 export function useDatasetStep() {
   const { state, setStep2, clear } = useEvaluationWizard();
-  const hasAutoRefinedOnLoadRef = useRef(false);
 
   const [modelsState, setModelsState] = useState<ModelsState>({ status: "loading" });
   const [selectedModelId, setSelectedModelId] = useState<string>(
@@ -109,7 +108,9 @@ export function useDatasetStep() {
   const countValidation = useMemo(() => parsePositiveInt(testCaseCountInput), [testCaseCountInput]);
   const isCountValid = countValidation.error === null;
 
-  const canRefine = canInteract && promptIsNonEmpty && !!selectedModel && !isRefining;
+  const step1Prompt = state.step1?.mainPrompt?.trim() ?? "";
+  const hasRefinableContent = promptIsNonEmpty || step1Prompt.length > 0;
+  const canRefine = canInteract && hasRefinableContent && !!selectedModel && !isRefining;
   const canGenerate = canInteract && promptIsNonEmpty && !!selectedModel && isCountValid && !isGenerating;
 
   const onSelectModel = useCallback((id: string) => setSelectedModelId(id), []);
@@ -146,28 +147,10 @@ export function useDatasetStep() {
 
   const onRefine = useCallback(async () => {
     if (!canRefine || !selectedModelId) return;
-    await runRefine(prompt);
-  }, [canRefine, prompt, runRefine, selectedModelId]);
-
-  // Auto-refine once when Step 2 first becomes interactive.
-  // Priority for initial prompt source:
-  // 1) Existing Step 2 prompt (if returning to this page)
-  // 2) Step 1 main prompt (fresh transition from Step 1)
-  useEffect(() => {
-    if (hasAutoRefinedOnLoadRef.current) return;
-    if (!canInteract || !selectedModelId || isRefining) return;
-
-    const seedPrompt = (prompt.trim() || state.step1?.mainPrompt?.trim() || "").trim();
-    if (!seedPrompt) return;
-
-    hasAutoRefinedOnLoadRef.current = true;
-    const timer = window.setTimeout(() => {
-      void runRefine(seedPrompt);
-    }, 0);
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, [canInteract, isRefining, prompt, runRefine, selectedModelId, state.step1?.mainPrompt]);
+    // Use the textbox content if non-empty, otherwise fall back to the Step 1 prompt.
+    const basePrompt = prompt.trim() || step1Prompt;
+    await runRefine(basePrompt);
+  }, [canRefine, prompt, runRefine, selectedModelId, step1Prompt]);
 
   const persistStep2 = useCallback(() => {
     if (!selectedModel) return;

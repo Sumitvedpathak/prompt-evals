@@ -176,7 +176,9 @@ export function DatasetStep() {
               </div>
               {refineError && <div className="mt-2 text-sm text-rose-300">{refineError}</div>}
               {!promptIsNonEmpty && (
-                <div className="mt-2 text-xs text-slate-400">Enter a prompt to enable actions.</div>
+                <div className="mt-2 text-xs text-slate-400">
+                  Leave empty and click Refine to use your Step 1 prompt as the starting point.
+                </div>
               )}
             </div>
 

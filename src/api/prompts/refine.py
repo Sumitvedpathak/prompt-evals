@@ -99,8 +99,6 @@ include 1–2 short input/output examples inside the prompt.
 - Be specific — avoid vague instructions like "be helpful" or "be concise"
 - Do NOT include any explanation, commentary, or preamble in your output
 - Output ONLY the refined prompt
-
-
 - Calibrate length to complexity: simple use cases get focused and concise prompts, 
   complex ones get thorough structured prompts.
 
@@ -124,6 +122,8 @@ be passed to another LLM responsible for creating the actual evaluation dataset.
 
 The generated prompt must be highly detailed, operationally precise, scalable, and optimized for robust LLM 
 evaluation pipelines.
+
+Below is the user prompt which needs to refine into a dataset generation prompt and the LLM model that will be used to generate the dataset.
 
 Prompt General Description: `{user_prompt}`
 LLM Model: `{dataset_target_model}`

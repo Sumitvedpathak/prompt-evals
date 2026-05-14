@@ -1,31 +1,7 @@
 [
   {
-    "id": "WA-ADV-001",
-    "category": "Retention / Crisis Management",
-    "difficulty": "Expert",
-    "scenario": "A luxury concierge service ('Aura Elite') has accidentally double-charged a High-Net-Worth Individual (HNWI) for their monthly membership. The client is known to be extremely impatient and values discretion and exclusivity. The goal is to apologize, announce the refund has been initiated, and offer a 'gesture of goodwill' without sounding desperate or like a generic corporate entity. The message must feel like it's coming from a dedicated personal account manager, not a support bot.",
-    "user_input": "write a wa msg to mr. thompson (VIP). we messed up and charged him twice. tell him sorry, money is on the way back. give him a free yacht charter weekend in monaco as an apology. keep it classy, high-end, not robotic. dont use the word 'apologize' or 'mistake'\u2014too corporate. make it short but make him feel like a king. use some whatsapp bolding for the highlight.",
-    "expected_criteria": [
-      "Must NOT use the words 'apologize' or 'mistake'.",
-      "Must maintain a 'Luxury Concierge' tone (understated, confident, servant-leadership).",
-      "Must clearly state the refund is processed.",
-      "Must highlight the Monaco yacht charter as the primary value add.",
-      "Must use WhatsApp markdown (*bold*) for key emotional or value elements.",
-      "Must be concise enough to read without scrolling (approx. 3-4 short paragraphs)."
-    ],
-    "evaluation_focus": [
-      "Constraint Adherence",
-      "Brand Voice Consistency",
-      "Emotional Intelligence",
-      "Brevity"
-    ],
-    "failure_modes": [
-      "Using banned words ('apologize'/'mistake')",
-      "Sounding too subservient or 'begging' for forgiveness",
-      "Writing a long-form email-style message instead of a chat message",
-      "Using generic 'corporate speak' (e.g., 'We value your business')",
-      "Overusing emojis, which degrades the luxury feel"
-    ],
-    "risk_level": "High"
+    "task": "Write a Python function using boto3 to list all S3 buckets in an account and return their names as a list.",
+    "format": "python",
+    "solution_criteria": "Must initialize the S3 client, call list_buckets(), and correctly parse the response to extract bucket names into a list."
   }
 ]
